@@ -1,0 +1,16 @@
+https://github.com/pyimreg  		//Image registration
+
+https://gist.github.com/JorgeMartinezG/5257559b54d9e6ef4fdce03c4558e773 	//WinPython Installation
+
+
+https://www.ics.forth.gr/cvrl/fire/		//DATASET FIRE
+
+
+http://www.robots.ox.ac.uk/~vgg/data/data-aff.html		//DATASET 2
+
+
+https://www.researchgate.net/post/Do_you_know_of_any_dataset_for_feature-based_image_registration	//DATASET 3
+
+
+
+
