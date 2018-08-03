@@ -48,6 +48,8 @@ def openFile():
 # -----------------------------------------------------------------------------
 # GLOBALS
 path = None
+my_logo = "regim_logo.ico"
+back_image = "yena.jpg"
 # -----------------------------------------------------------------------------
 # Create instance
 win = tk.Tk()
@@ -57,7 +59,7 @@ win.title("REGIM")
 win.geometry("450x570+0+0")
 
 # Change icon
-win.iconbitmap(myf.resource_path("logo.ico"))
+win.iconbitmap(myf.resource_path(my_logo))
 
 # Disable resizing the GUI
 win.resizable(False, False)
@@ -80,7 +82,7 @@ canvas = Canvas(win, width=100, height=100)
 # #BgImage = PhotoImage(file= ruta)
 # BgImage = ImageTk.PhotoImage(my_image)
 size = 450, 450
-test_image = Image.open(myf.resource_path("yena.jpg"))
+test_image = Image.open(myf.resource_path(back_image))
 test_image.thumbnail(size, Image.ANTIALIAS)
 test_image2 = ImageTk.PhotoImage(test_image)
 

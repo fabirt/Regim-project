@@ -6,9 +6,7 @@ block_cipher = None
 a = Analysis(['prueba.py'],
              pathex=['C:\\Users\\Fabian\\Desktop\\Fabi_py_Projects\\Prueba_exe'],
              binaries=[],
-             datas=[('images\logo.ico', '.'),
-                    ('images\yena.jpg', '.')
-                ],
+             datas=[('images/*', '.')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -28,4 +26,4 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           runtime_tmpdir=None,
-          console=False , version='version.txt', icon='ico11.ico')
+          console=False , version='version.txt', icon='mini.ico')
