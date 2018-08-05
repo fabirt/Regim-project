@@ -2,12 +2,16 @@ from __future__ import print_function
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
 
 MAX_FEATURES = 500
-GOOD_MATCH_PERCENT = 0.15
+GOOD_MATCH_PERCENT = 0.1
+imMatches = None
 
 
 def alignImages(im1, im2):
+
+    global imMatches
     # Convert images to grayscale
     im1Gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
     im2Gray = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
@@ -19,6 +23,7 @@ def alignImages(im1, im2):
 
     # Match features.
     matcher = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
+    # matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
     matches = matcher.match(descriptors1, descriptors2, None)
 
     # Sort matches by score
@@ -27,9 +32,9 @@ def alignImages(im1, im2):
     # Remove not so good matches
     numGoodMatches = int(len(matches) * GOOD_MATCH_PERCENT)
     matches = matches[:numGoodMatches]
-
+    print(matches)
     # Draw top matches
-    imMatches = cv2.drawMatches(im1, keypoints1, im2, keypoints2, matches, None)
+    imMatches = cv2.drawMatches(im1, keypoints1, im2, keypoints2, matches, None, flags=2)
     #  cv2.imwrite("matches.jpg", imMatches)
 
     # Extract location of good matches
@@ -51,6 +56,7 @@ def alignImages(im1, im2):
 
 
 if __name__ == '__main__':
+
     # Read reference image
     refFilename = 'images/000012.jpg'
     print("Reading reference image : ", refFilename)
@@ -74,6 +80,9 @@ if __name__ == '__main__':
     # Print estimated homography
     print("Estimated homography : \n", h)
 
+    my_pil = Image.fromarray(imMatches)
+    my_pil.show()
+
     f = plt.figure()
     f.add_subplot(1, 3, 1)
     plt.imshow(imReference)
@@ -82,4 +91,7 @@ if __name__ == '__main__':
     f.add_subplot(1, 3, 3)
     plt.imshow(imReg)
     plt.show()
+
+    # cv2.imshow("Image 1", imMatches)
+    # cv2.waitKey(0)
 
