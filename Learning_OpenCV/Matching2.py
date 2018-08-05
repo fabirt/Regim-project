@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 MAX_FEATURES = 500
-GOOD_MATCH_PERCENT = 0.1
+GOOD_MATCH_PERCENT = 0.15
 imMatches = None
 
 
