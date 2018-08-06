@@ -13,6 +13,10 @@ body{
     margin-right: 16px;
 
 }
+.btn:focus{
+    border: none;
+    outline: none;
+}
 
 /* Darker background on mouse-over */
 .btn:hover {
