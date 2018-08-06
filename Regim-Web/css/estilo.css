@@ -1,0 +1,36 @@
+/* Style buttons */
+body{
+    
+}
+.btn {
+    font-family: Verdana;
+  background-color: #ff6464;
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  cursor: pointer;
+  font-size: 18px;
+    margin-right: 16px;
+
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: #b75151;
+}
+
+.w3-image{
+    margin-top: 4px;
+}
+
+.w3-center w3-padding-16{
+    background-color: #ff6464;
+}
+
+#logo{
+    margin-left: 6px;
+}
+
+p{
+    font-family: verdana;
+}
