@@ -13,11 +13,6 @@ Created on Tue Jul 31 20:08:37 2018
 import os
 import sys
 import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image
-import scipy
-from scipy.interpolate import *
 
 
 def resource_path(relative_path):

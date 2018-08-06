@@ -1,18 +1,17 @@
 
-import time
 import classes.Methods as met
 import tkinter as tk
 from tkinter import *  # ttk, PhotoImage, Label, Menu, Canvas
-from tkinter.filedialog import askopenfilename
+# from tkinter.filedialog import askopenfilename
 from PIL import ImageTk, Image
 from tkinter import ttk
 
 # ------------------------------------------------------------------------------
 # GLOBALS
 # ------------------------------------------------------------------------------
-icon_path = 'icono.ico'
-imref_path = '000012.jpg'
-iminput_path = '000013.jpg'
+icon_path = met.resource_path('icono.ico')
+imref_path = met.resource_path('000012.jpg')
+iminput_path = met.resource_path('000013.jpg')
 
 
 # ------------------------------------------------------------------------------
@@ -30,7 +29,7 @@ def do_match():
     progress_bar = ttk.Progressbar(process_frame, orient='horizontal', length=300, mode='determinate')
     progress_bar.grid(row=1, columnspan=6)
 
-    images_matched = met.match(met.resource_path(imref_path), met.resource_path(iminput_path))
+    images_matched = met.match(imref_path, iminput_path)
 
     Image_matched = Image.fromarray(images_matched)
     Image_matched.thumbnail((400, 400), Image.ANTIALIAS)
@@ -49,7 +48,7 @@ root.title("REGIM")
 root.geometry("800x550+0+0")
 
 # Change icon
-root.iconbitmap(met.resource_path(icon_path))
+root.iconbitmap(icon_path)
 
 # Disable resizing the GUI
 root.resizable(False, False)
@@ -89,11 +88,11 @@ match_button = Button(menu_frame, text="Match features", command=do_match,
 
 # Adding images
 size = 200, 200
-im_reference = Image.open(met.resource_path(imref_path))
+im_reference = Image.open(imref_path)
 im_reference.thumbnail(size, Image.ANTIALIAS)
 im_reference = ImageTk.PhotoImage(im_reference)
 
-im_input = Image.open(met.resource_path(iminput_path))
+im_input = Image.open(iminput_path)
 im_input.thumbnail(size, Image.ANTIALIAS)
 im_input = ImageTk.PhotoImage(im_input)
 
