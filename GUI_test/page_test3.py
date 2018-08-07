@@ -5,8 +5,8 @@
 # In conjunction with Tcl version 8.6
 #    Aug 07, 2018 03:00:18 PM
 
-import sys
-import classes.Methods as met
+# import sys
+import classes.Methods as Met
 from tkinter.filedialog import askopenfilename
 
 try:
@@ -36,7 +36,7 @@ def vp_start_gui():
 w = None
 
 
-def create_Regim(root, *args, **kwargs):
+def create_regim(root, *args, **kwargs):
     # '''Starting point when module is imported by another program.'''
     global w, w_win, rt
     rt = root
@@ -46,10 +46,11 @@ def create_Regim(root, *args, **kwargs):
     return w, top
 
 
-def destroy_Regim():
+def destroy_regim():
     global w
     w.destroy()
     w = None
+
 
 def exit_btn():
     global root
@@ -64,11 +65,9 @@ class Regim:
 
         from PIL import ImageTk, Image
 
-        global iminput_path, imref_path, icon_path
-
-        self.icon_path = met.resource_path('icono.ico')
-        self.imref_path = met.resource_path('000012.jpg')
-        self.iminput_path = met.resource_path('000013.jpg')
+        self.icon_path = Met.resource_path('images/icono.ico')
+        self.imref_path = Met.resource_path('images/000012.jpg')
+        self.iminput_path = Met.resource_path('images/000013.jpg')
 
         # '''This class configures and populates the toplevel window.
         #   top is the toplevel containing window.'''
@@ -81,26 +80,6 @@ class Regim:
             " -underline 0 -overstrike 0"
         font9 = "-family Verdana -size 13 -weight normal -slant roman "  \
             "-underline 0 -overstrike 0"
-
-        def do_match():
-
-            images_matched = met.match(self.imref_path, self.iminput_path)
-
-            Image_matched = Image.fromarray(images_matched)
-            Image_matched.thumbnail((400, 400), Image.ANTIALIAS)
-            Image_matched = ImageTk.PhotoImage(Image_matched)
-
-            self.label_reg.configure(image=Image_matched)
-            self.label_reg.image = Image_matched
-
-        def openFile():
-            try:
-                path = askopenfilename(initialdir=".",
-                                       filetypes=(("Image File .jpg", "*.jpg"), ("All Files", "*.*")),
-                                       title="Choose an imgage."
-                                       )
-            except:
-                pass
 
         size = 200, 200
         self.im_reference = Image.open(self.imref_path)
@@ -129,7 +108,7 @@ class Regim:
         )
         self.file.add_command(
             font="TkMenuFont",
-            command=openFile,
+            command=self.open_file,
             label="Load"
         )
         self.file.add_command(
@@ -256,11 +235,29 @@ class Regim:
         self.Frame1.configure(highlightcolor="#ffffff")
         self.Frame1.configure(width=1005)
 
-        self.btn_match.configure(command=do_match)
+        self.btn_match.configure(command=self.do_match)
+
+    def open_file(self):
+        try:
+            path = askopenfilename(initialdir=".",
+                                   filetypes=(("Image File .jpg", "*.jpg"), ("All Files", "*.*")),
+                                   title="Choose an imgage."
+                                   )
+        except():
+            pass
+
+    def do_match(self):
+        from PIL import ImageTk, Image
+
+        images_matched = Met.match(self.imref_path, self.iminput_path)
+
+        image_matched = Image.fromarray(images_matched)
+        image_matched.thumbnail((400, 400), Image.ANTIALIAS)
+        image_matched = ImageTk.PhotoImage(image_matched)
+
+        self.label_reg.configure(image=image_matched)
+        self.label_reg.image = image_matched
 
 
 if __name__ == '__main__':
     vp_start_gui()
-
-
-
