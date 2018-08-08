@@ -5,7 +5,11 @@
 # In conjunction with Tcl version 8.6
 #    Aug 07, 2018 03:00:18 PM
 
+# -----------------------------------------------------------------------------
+# IMPORTS
+# -----------------------------------------------------------------------------
 # import sys
+import os
 import classes.Methods as Met
 from tkinter.filedialog import askopenfilename
 
@@ -24,6 +28,9 @@ except ImportError:
 import page_test3_support
 
 
+# -----------------------------------------------------------------------------
+# EXTRA METHODS
+# -----------------------------------------------------------------------------
 def vp_start_gui():
     # '''Starting point when module is the main routine.'''
     global val, w, root
@@ -53,10 +60,27 @@ def destroy_regim():
 
 
 def exit_btn():
-    global root
     root.quit()
     root.destroy()
     exit()
+
+
+# -----------------------------------------------------------------------------
+# GLOBAL VARIABLES
+# -----------------------------------------------------------------------------
+my_icon = 'icono.ico'
+my_imref_path = ''
+my_iminput_path = ''
+my_add_btn_path = 'add_btn.png'
+my_empty_image_path = 'empty.jpg'
+my_png_dest_1 = 'input_1.png'
+my_png_dest_2 = 'input_2.png'
+
+in_size = 200, 200
+out_size = 400, 400
+# -----------------------------------------------------------------------------
+# MAIN CLASS
+# -----------------------------------------------------------------------------
 
 
 class Regim:
@@ -65,9 +89,13 @@ class Regim:
 
         from PIL import ImageTk, Image
 
-        self.icon_path = Met.resource_path('images/icono.ico')
-        self.imref_path = Met.resource_path('images/000012.jpg')
-        self.iminput_path = Met.resource_path('images/000013.jpg')
+        self.icon_path = Met.resource_path(my_icon)
+        self.imref_path = None
+        self.iminput_path = None
+        self.add_btn_path = Met.resource_path(my_add_btn_path)
+        self.empty_image_path = Met.resource_path(my_empty_image_path)
+        self.png_dest_1 = my_png_dest_1
+        self.png_dest_2 = my_png_dest_2
 
         # '''This class configures and populates the toplevel window.
         #   top is the toplevel containing window.'''
@@ -81,14 +109,9 @@ class Regim:
         font9 = "-family Verdana -size 13 -weight normal -slant roman "  \
             "-underline 0 -overstrike 0"
 
-        size = 200, 200
-        self.im_reference = Image.open(self.imref_path)
-        self.im_reference.thumbnail(size, Image.ANTIALIAS)
-        self.im_reference = ImageTk.PhotoImage(self.im_reference)
-
-        self.im_input = Image.open(self.iminput_path)
-        self.im_input.thumbnail(size, Image.ANTIALIAS)
-        self.im_input = ImageTk.PhotoImage(self.im_input)
+        self.empty_image = Image.open(self.empty_image_path)
+        self.empty_image.thumbnail(in_size, Image.ANTIALIAS)
+        self.empty_image = ImageTk.PhotoImage(self.empty_image)
 
         top.geometry("975x610+127+8")
         top.title("Regim")
@@ -184,29 +207,28 @@ class Regim:
         self.label_ref = Label(self.frame_process)
         self.label_ref.place(relx=0.06, rely=0.09, height=200, width=200)
         self.label_ref.configure(background="#ffffff")
-        self.label_ref.configure(cursor="hand2")
         self.label_ref.configure(disabledforeground="#a3a3a3")
         self.label_ref.configure(font=font10)
         self.label_ref.configure(foreground="#000000")
         self.label_ref.configure(text='''Reference image''')
         self.label_ref.configure(width=200)
-        self.label_ref.configure(image=self.im_reference)
-        self.label_ref.image = self.im_reference
+        self.label_ref.configure(image=self.empty_image)
+        self.label_ref.image = self.empty_image
 
         self.label_input = Label(self.frame_process)
         self.label_input.place(relx=0.06, rely=0.48, height=200, width=200)
         self.label_input.configure(activebackground="#f9f9f9")
         self.label_input.configure(activeforeground="black")
         self.label_input.configure(background="#ffffff")
-        self.label_input.configure(cursor="hand2")
+        self.label_input.configure(cursor="")
         self.label_input.configure(disabledforeground="#a3a3a3")
         self.label_input.configure(font=font10)
         self.label_input.configure(foreground="#000000")
         self.label_input.configure(highlightbackground="#d9d9d9")
         self.label_input.configure(highlightcolor="black")
         self.label_input.configure(text='''Input image''')
-        self.label_input.configure(image=self.im_input)
-        self.label_input.image = self.im_input
+        self.label_input.configure(image=self.empty_image)
+        self.label_input.image = self.empty_image
 
         self.label_reg = Label(self.frame_process)
         self.label_reg.place(relx=0.41, rely=0.48, height=200, width=400)
@@ -235,6 +257,39 @@ class Regim:
         self.Frame1.configure(highlightcolor="#ffffff")
         self.Frame1.configure(width=1005)
 
+        self.add1_button = Button(self.frame_process)
+        self.add1_button.place(relx=0.32, rely=0.09, height=20, width=20)
+        self.add1_button.configure(activebackground="#d9d9d9")
+        self.add1_button.configure(activeforeground="#000000")
+        self.add1_button.configure(background="#d9d9d9")
+        self.add1_button.configure(borderwidth="0")
+        self.add1_button.configure(disabledforeground="#a3a3a3")
+        self.add1_button.configure(foreground="#000000")
+        self.add1_button.configure(highlightbackground="#d9d9d9")
+        self.add1_button.configure(highlightcolor="black")
+        self._img1 = PhotoImage(file=self.add_btn_path)
+        self.add1_button.configure(image=self._img1)
+        self.add1_button.configure(pady="0")
+        self.add1_button.configure(text='')
+        self.add1_button.configure(width=350)
+        self.add1_button.configure(command=self.add_ref_image)
+
+        self.add2_button = Button(self.frame_process)
+        self.add2_button.place(relx=0.32, rely=0.48, height=20, width=20)
+        self.add2_button.configure(activebackground="#d9d9d9")
+        self.add2_button.configure(activeforeground="#000000")
+        self.add2_button.configure(background="#d9d9d9")
+        self.add2_button.configure(borderwidth="0")
+        self.add2_button.configure(disabledforeground="#a3a3a3")
+        self.add2_button.configure(foreground="#000000")
+        self.add2_button.configure(highlightbackground="#d9d9d9")
+        self.add2_button.configure(highlightcolor="black")
+        self._img2 = PhotoImage(file=self.add_btn_path)
+        self.add2_button.configure(image=self._img2)
+        self.add2_button.configure(pady="0")
+        self.add2_button.configure(text='')
+        self.add2_button.configure(command=self.add_in_image)
+
         self.btn_match.configure(command=self.do_match)
 
     def open_file(self):
@@ -249,14 +304,62 @@ class Regim:
     def do_match(self):
         from PIL import ImageTk, Image
 
-        images_matched = Met.match(self.imref_path, self.iminput_path)
+        try:
+            images_matched = Met.match(self.imref_path, self.iminput_path)
 
-        image_matched = Image.fromarray(images_matched)
-        image_matched.thumbnail((400, 400), Image.ANTIALIAS)
-        image_matched = ImageTk.PhotoImage(image_matched)
+            image_matched = Image.fromarray(images_matched)
+            image_matched.thumbnail(out_size, Image.ANTIALIAS)
+            image_matched = ImageTk.PhotoImage(image_matched)
 
-        self.label_reg.configure(image=image_matched)
-        self.label_reg.image = image_matched
+            self.label_reg.configure(image=image_matched)
+            self.label_reg.image = image_matched
+
+            # os.remove(self.imref_path)
+            # os.remove(self.iminput_path)
+        except:
+            pass
+
+    def add_ref_image(self):
+        from PIL import ImageTk, Image
+        try:
+            self.imref_path = askopenfilename(
+                        initialdir=".",
+                        filetypes=(("Image File .dcm", "*.dcm"), ("All Files", "*.*")),
+                        title="Choose image 1."
+                       )
+            Met.dicom_to_png(self.imref_path, self.png_dest_1)
+
+            png_file = Image.open(self.png_dest_1)
+            png_file.thumbnail(in_size, Image.ANTIALIAS)
+            png_image = ImageTk.PhotoImage(png_file)
+            self.label_ref.configure(image=png_image)
+            self.label_ref.image = png_image
+
+            self.imref_path = self.png_dest_1
+
+        except():
+            pass
+
+    def add_in_image(self):
+        from PIL import ImageTk, Image
+        try:
+            self.iminput_path = askopenfilename(
+                            initialdir=".",
+                            filetypes=(("Image File .dcm", "*.dcm"), ("All Files", "*.*")),
+                            title="Choose image 2."
+                            )
+            Met.dicom_to_png(self.iminput_path, self.png_dest_2)
+
+            png_file = Image.open(self.png_dest_2)
+            png_file.thumbnail(in_size, Image.ANTIALIAS)
+            png_image = ImageTk.PhotoImage(png_file)
+            self.label_input.configure(image=png_image)
+            self.label_input.image = png_image
+
+            self.iminput_path = self.png_dest_2
+
+        except():
+            pass
 
 
 if __name__ == '__main__':
