@@ -2,6 +2,9 @@
 body{
     
 }
+
+body,h1,h2,h3,h4,h5 {font-family: "Verdana"}
+
 .btn {
     font-family: Verdana;
   background-color: #ff6464;
@@ -38,3 +41,8 @@ body{
 p{
     font-family: verdana;
 }
+
+#med{
+    border-radius: 10%;
+}
+
