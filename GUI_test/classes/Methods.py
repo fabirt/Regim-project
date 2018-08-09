@@ -51,12 +51,12 @@ def match(file_reference, file_input):
         MAX_FEATURES = 500
         GOOD_MATCH_PERCENT = 0.15
 
-        imReference = cv2.imread(file_reference, cv2.IMREAD_COLOR)
-        imInput = cv2.imread(file_input, cv2.IMREAD_COLOR)
+        imReference = cv2.imread(file_reference, 0)  # cv2.IMREAD_COLOR
+        imInput = cv2.imread(file_input, 0)
 
         # Convert images to gray scale
-        im1Gray = cv2.cvtColor(imReference, cv2.COLOR_BGR2GRAY)
-        im2Gray = cv2.cvtColor(imInput, cv2.COLOR_BGR2GRAY)
+        im1Gray = imReference  # cv2.cvtColor(imReference, cv2.COLOR_BGR2GRAY)
+        im2Gray = imInput  # cv2.cvtColor(imInput, cv2.COLOR_BGR2GRAY)
 
         # Detect ORB features and compute descriptors.
         orb = cv2.ORB_create(MAX_FEATURES)
