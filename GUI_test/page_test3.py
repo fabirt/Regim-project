@@ -68,11 +68,11 @@ def exit_btn():
 # -----------------------------------------------------------------------------
 # GLOBAL VARIABLES
 # -----------------------------------------------------------------------------
-my_icon = 'icono.ico'
+my_icon = 'images/icono.ico'
 my_imref_path = ''
 my_iminput_path = ''
-my_add_btn_path = 'add_btn.png'
-my_empty_image_path = 'empty.jpg'
+my_add_btn_path = 'images/add_btn.png'
+my_empty_image_path = 'images/empty.jpg'
 my_png_dest_1 = 'input_1.png'
 my_png_dest_2 = 'input_2.png'
 
@@ -321,13 +321,21 @@ class Regim:
 
     def add_ref_image(self):
         from PIL import ImageTk, Image
+        self.png_dest_1 = my_png_dest_1
         try:
             self.imref_path = askopenfilename(
                         initialdir=".",
-                        filetypes=(("Image File .dcm", "*.dcm"), ("All Files", "*.*")),
+                        filetypes=(
+                            ("Dicom (*.DCM)", "*.dcm"),
+                            ("JPEG (*.JPG)", "*.jpg*"),
+                            ("PNG (*.PNG)", "*.png*")
+                        ),
                         title="Choose image 1."
                        )
-            Met.dicom_to_png(self.imref_path, self.png_dest_1)
+            if self.imref_path[-3:] == 'dcm':
+                Met.dicom_to_png(self.imref_path, self.png_dest_1)
+            else:
+                self.png_dest_1 = self.imref_path
 
             png_file = Image.open(self.png_dest_1)
             png_file.thumbnail(in_size, Image.ANTIALIAS)
@@ -337,18 +345,26 @@ class Regim:
 
             self.imref_path = self.png_dest_1
 
-        except():
+        except:
             pass
 
     def add_in_image(self):
         from PIL import ImageTk, Image
+        self.png_dest_2 = my_png_dest_2
         try:
             self.iminput_path = askopenfilename(
                             initialdir=".",
-                            filetypes=(("Image File .dcm", "*.dcm"), ("All Files", "*.*")),
+                            filetypes=(
+                                ("Dicom (*.DCM)", "*.dcm"),
+                                ("JPEG (*.JPG)", "*.jpg*"),
+                                ("PNG (*.PNG)", "*.png*")
+                            ),
                             title="Choose image 2."
                             )
-            Met.dicom_to_png(self.iminput_path, self.png_dest_2)
+            if self.iminput_path[-3:] == 'dcm':
+                Met.dicom_to_png(self.iminput_path, self.png_dest_2)
+            else:
+                self.png_dest_2 = self.iminput_path
 
             png_file = Image.open(self.png_dest_2)
             png_file.thumbnail(in_size, Image.ANTIALIAS)
@@ -358,7 +374,7 @@ class Regim:
 
             self.iminput_path = self.png_dest_2
 
-        except():
+        except:
             pass
 
 
