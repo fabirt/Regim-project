@@ -14,8 +14,8 @@ def command_iteration(method) :
     )
 
 
-fixed_file = '../images/fixedImage.png'
-moving_file = '../images/movingImage.png'
+fixed_file = '../images/fixed_input.png'
+moving_file = '../images/moving_input.png'
 Image.open(fixed_file).show()
 Image.open(moving_file).show()
 

@@ -19,8 +19,8 @@ def command_iteration(method) :
 
 pixelType = sitk.sitkFloat32
 
-fixed_file = '../images/fixedImage.png'
-moving_file = '../images/movingImage.png'
+fixed_file = '../images/fixed_input.png'
+moving_file = '../images/moving_input.png'
 
 fixed = sitk.ReadImage(fixed_file, sitk.sitkFloat32)
 

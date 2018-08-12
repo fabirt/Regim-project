@@ -3,6 +3,7 @@ from __future__ import print_function
 
 import SimpleITK as sitk
 from PIL import Image
+import pruebas.Methods as Met
 import sys
 import os
 
@@ -11,12 +12,12 @@ def command_iteration(filter):
     print("{0:3} = {1:10.5f}".format(filter.GetElapsedIterations(), filter.GetMetric()))
 
 
-fixed_file = '../images/fixedImage.png'
-moving_file = '../images/movingImage.png'
+fixed_file = '../images/fixed_input.png'
+moving_file = '../images/moving_input.png'
 
-fixed = sitk.ReadImage(fixed_file, sitk.sitkFloat32)
+fixed = sitk.ReadImage(fixed_file)
 
-moving = sitk.ReadImage(moving_file, sitk.sitkFloat32)
+moving = sitk.ReadImage(moving_file)
 
 
 matcher = sitk.HistogramMatchingImageFilter()
@@ -61,7 +62,8 @@ if not "SITK_NOSHOW" in os.environ:
     # the compose filter.
     cimg = sitk.Compose(simg1, simg2, simg1//2.+simg2//2.)
 
-    nda = sitk.GetArrayViewFromImage(cimg)
+    nda = sitk.GetArrayFromImage(cimg)
+    print(nda)
     my_pil = Image.fromarray(nda)
     my_pil.show()
 
