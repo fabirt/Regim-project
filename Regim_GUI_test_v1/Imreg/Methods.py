@@ -19,6 +19,7 @@ import pydicom
 
 
 def resource_path(relative_path):
+    """Search file with the relative path"""
     try:
         if hasattr(sys, '_MEIPASS'):
             return os.path.join(sys._MEIPASS, relative_path)
@@ -28,6 +29,7 @@ def resource_path(relative_path):
 
 
 def dicom_to_png(dicom_file_path, destination):
+    """Convert a DICOM file into a PNG file"""
     try:
         ds = pydicom.dcmread(dicom_file_path)
         shape = ds.pixel_array.shape
@@ -47,6 +49,7 @@ def dicom_to_png(dicom_file_path, destination):
 
 
 def match(file_reference, file_input):
+    """Match characteristics features between the two input images"""
     try:
         MAX_FEATURES = 500
         GOOD_MATCH_PERCENT = 0.15

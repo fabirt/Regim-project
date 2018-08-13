@@ -34,7 +34,7 @@ import Regim_page_support
 # EXTRA METHODS
 # -----------------------------------------------------------------------------
 def vp_start_gui():
-    # '''Starting point when module is the main routine.'''
+    """Starting point when module is the main routine."""
     global val, w, root
     root = Tk()
     top = Regim(root)
@@ -46,7 +46,7 @@ w = None
 
 
 def create_regim(root, *args, **kwargs):
-    # '''Starting point when module is imported by another program.'''
+    """Starting point when module is imported by another program."""
     global w, w_win, rt
     rt = root
     w = Toplevel(root)
@@ -62,6 +62,7 @@ def destroy_regim():
 
 
 def exit_btn():
+    """Close program"""
     root.quit()
     root.destroy()
     exit()
@@ -84,13 +85,15 @@ out_size = 400, 400
 # MAIN CLASS
 # -----------------------------------------------------------------------------
 
-
 class Regim:
 
     def __init__(self, top=None):
+        """This class configures and populates the toplevel window.
+                top is the toplevel containing window."""
 
         from PIL import ImageTk, Image
 
+        # Loading required images and paths
         self.icon_path = Met.resource_path(my_icon)
         self.imref_path = None
         self.iminput_path = None
@@ -99,8 +102,6 @@ class Regim:
         self.png_dest_1 = my_png_dest_1
         self.png_dest_2 = my_png_dest_2
 
-        # '''This class configures and populates the toplevel window.
-        #   top is the toplevel containing window.'''
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
         _fgcolor = '#000000'  # X11 color: 'black'
         _compcolor = '#d9d9d9'  # X11 color: 'gray85'
@@ -111,10 +112,16 @@ class Regim:
         font9 = "-family Verdana -size 13 -weight normal -slant roman "  \
             "-underline 0 -overstrike 0"
 
+        # Opening and resizing images
         self.empty_image = Image.open(self.empty_image_path)
         self.empty_image.thumbnail(in_size, Image.ANTIALIAS)
         self.empty_image = ImageTk.PhotoImage(self.empty_image)
 
+        self.empty_image2 = Image.open(self.empty_image_path)
+        self.empty_image2.thumbnail(out_size, Image.ANTIALIAS)
+        self.empty_image2 = ImageTk.PhotoImage(self.empty_image2)
+
+        # Creating all the GUI
         top.geometry("975x610+127+8")
         top.title("Regim")
         top.iconbitmap(self.icon_path)
@@ -187,7 +194,7 @@ class Regim:
         self.btn_match.configure(overrelief="sunken")
         self.btn_match.configure(pady="0")
         self.btn_match.configure(relief=FLAT)
-        self.btn_match.configure(text='''Match features''')
+        self.btn_match.configure(text='Registration')
 
         self.label_side = LabelFrame(self.frame_side)
         self.label_side.place(relx=0.16, rely=0.05, relheight=0.79, relwidth=0.7)
@@ -233,11 +240,13 @@ class Regim:
         self.label_input.image = self.empty_image
 
         self.label_reg = Label(self.frame_process)
-        self.label_reg.place(relx=0.41, rely=0.11, height=400, width=400)
+        self.label_reg.place(relx=0.41, rely=0.12, height=400, width=400)
         self.label_reg.configure(background="#ffffff")
         self.label_reg.configure(disabledforeground="#a3a3a3")
         self.label_reg.configure(foreground="#000000")
         self.label_reg.configure(width=400)
+        self.label_reg.configure(image=self.empty_image2)
+        self.label_reg.image = self.empty_image2
 
         self.frame_foot = Frame(top)
         self.frame_foot.place(relx=-0.01, rely=0.94, relheight=0.07, relwidth=1.02)
@@ -295,6 +304,7 @@ class Regim:
         self.btn_match.configure(command=self.do_registration)
 
     def open_file(self):
+        """Open a file"""
         try:
             path = askopenfilename(initialdir=".",
                                    filetypes=(("Image File .jpg", "*.jpg"), ("All Files", "*.*")),
@@ -304,6 +314,7 @@ class Regim:
             pass
 
     def do_match(self):
+        """Method used for match characteristics elements between two images"""
         from PIL import ImageTk, Image
 
         try:
@@ -322,8 +333,10 @@ class Regim:
             pass
 
     def add_ref_image(self):
+        """Open an image file and show it in the GUI"""
         from PIL import ImageTk, Image
         self.png_dest_1 = my_png_dest_1
+        # Searching file
         try:
             self.imref_path = askopenfilename(
                         initialdir=".",
@@ -334,11 +347,13 @@ class Regim:
                         ),
                         title="Choose image 1."
                        )
+            # Converting .dcm file to .png for manipulation
             if self.imref_path[-3:] == 'dcm':
                 Met.dicom_to_png(self.imref_path, self.png_dest_1)
             else:
                 self.png_dest_1 = self.imref_path
 
+            # Place it in the GUI label
             png_file = Image.open(self.png_dest_1)
             png_file.thumbnail(in_size, Image.ANTIALIAS)
             png_image = ImageTk.PhotoImage(png_file)
@@ -351,9 +366,11 @@ class Regim:
             pass
 
     def add_in_image(self):
+        """Open an image file and show it in the GUI"""
         from PIL import ImageTk, Image
         self.png_dest_2 = my_png_dest_2
         try:
+            # Searching file
             self.iminput_path = askopenfilename(
                             initialdir=".",
                             filetypes=(
@@ -363,11 +380,13 @@ class Regim:
                             ),
                             title="Choose image 2."
                             )
+            # Converting .dcm file to .png for manipulation
             if self.iminput_path[-3:] == 'dcm':
                 Met.dicom_to_png(self.iminput_path, self.png_dest_2)
             else:
                 self.png_dest_2 = self.iminput_path
 
+            # Place it in the GUI label
             png_file = Image.open(self.png_dest_2)
             png_file.thumbnail(in_size, Image.ANTIALIAS)
             png_image = ImageTk.PhotoImage(png_file)
@@ -380,12 +399,14 @@ class Regim:
             pass
 
     def do_registration(self):
+        """Do the registration for the fixed and moving image"""
         from PIL import Image, ImageTk
         try:
             my_imreg = Reg.Imreg(self.png_dest_1, self.png_dest_2)
             registered_image = my_imreg.image_registration_method3()
             # registered_image = Image.fromarray(self.registered_image)
             registered_image.thumbnail(out_size, Image.ANTIALIAS)
+            registered_image.resize(out_size, Image.ANTIALIAS)
             registered_image = ImageTk.PhotoImage(registered_image)
 
             self.label_reg.configure(image=registered_image)
