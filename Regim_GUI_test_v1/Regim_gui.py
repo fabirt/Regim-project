@@ -9,11 +9,11 @@
 # IMPORTS
 # -----------------------------------------------------------------------------
 # import sys
-import os
+# import os
 import Imreg.Methods as Met
 import Imreg.RegistrationMethods as Reg
 from tkinter.filedialog import askopenfilename
-import time
+# import time
 
 try:
     from Tkinter import *
@@ -31,7 +31,7 @@ import Regim_page_support
 
 
 # -----------------------------------------------------------------------------
-# EXTRA METHODS
+# START METHODS
 # -----------------------------------------------------------------------------
 def vp_start_gui():
     """Starting point when module is the main routine."""
@@ -71,19 +71,23 @@ def exit_btn():
 # -----------------------------------------------------------------------------
 # GLOBAL VARIABLES
 # -----------------------------------------------------------------------------
-my_icon = 'images/icono.ico'
-my_imref_path = ''
-my_iminput_path = ''
-my_add_btn_path = 'images/add_btn.png'
-my_empty_image_path = 'images/empty.jpg'
-my_png_dest_1 = 'input_1.png'
-my_png_dest_2 = 'input_2.png'
+MY_ICON = 'icon.ico'
+MY_ADD_BTN_PATH = 'add_btn.png'
+MY_EMPTY_IMAGE_PATH = 'empty.jpg'
+MY_PNG_DEST_1 = 'input_1.png'
+MY_PNG_DEST_2 = 'input_2.png'
+MY_OUT_DEST = 'output.png'
+MY_IMREF_PATH = ''
+MY_IMINPUT_PATH = ''
+BASIC_COLOR = '#2857a9'
 
-in_size = 200, 200
-out_size = 400, 400
+IN_SIZE = 200, 200
+OUT_SIZE = 400, 400
+
 # -----------------------------------------------------------------------------
 # MAIN CLASS
 # -----------------------------------------------------------------------------
+
 
 class Regim:
 
@@ -94,41 +98,43 @@ class Regim:
         from PIL import ImageTk, Image
 
         # Loading required images and paths
-        self.icon_path = Met.resource_path(my_icon)
-        self.imref_path = None
-        self.iminput_path = None
-        self.add_btn_path = Met.resource_path(my_add_btn_path)
-        self.empty_image_path = Met.resource_path(my_empty_image_path)
-        self.png_dest_1 = my_png_dest_1
-        self.png_dest_2 = my_png_dest_2
+        self.icon_path = Met.resource_path(MY_ICON)
+        self.add_btn_path = Met.resource_path(MY_ADD_BTN_PATH)
+        self.empty_image_path = Met.resource_path(MY_EMPTY_IMAGE_PATH)
+        self.png_dest_1 = MY_PNG_DEST_1
+        self.png_dest_2 = MY_PNG_DEST_2
+        self.im_fixed_path = None
+        self.im_moving_path = None
 
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
         _fgcolor = '#000000'  # X11 color: 'black'
         _compcolor = '#d9d9d9'  # X11 color: 'gray85'
         _ana1color = '#d9d9d9'  # X11 color: 'gray85'
         _ana2color = '#d9d9d9'  # X11 color: 'gray85'
-        font10 = "-family Verdana -size 10 -weight normal -slant roman"  \
+        font11 = "-family Verdana -size 11 -weight normal -slant roman"  \
             " -underline 0 -overstrike 0"
-        font9 = "-family Verdana -size 13 -weight normal -slant roman "  \
+        font13 = "-family Verdana -size 13 -weight normal -slant roman "  \
             "-underline 0 -overstrike 0"
 
         # Opening and resizing images
         self.empty_image = Image.open(self.empty_image_path)
-        self.empty_image.thumbnail(in_size, Image.ANTIALIAS)
+        self.empty_image.thumbnail(IN_SIZE, Image.ANTIALIAS)
         self.empty_image = ImageTk.PhotoImage(self.empty_image)
 
         self.empty_image2 = Image.open(self.empty_image_path)
-        self.empty_image2.thumbnail(out_size, Image.ANTIALIAS)
+        self.empty_image2.thumbnail(OUT_SIZE, Image.ANTIALIAS)
         self.empty_image2 = ImageTk.PhotoImage(self.empty_image2)
 
         # Creating all the GUI
         top.geometry("975x610+127+8")
         top.title("Regim")
         top.iconbitmap(self.icon_path)
+        top.resizable(False, False)
         top.configure(background="#d9d9d9")
         top.configure(highlightbackground="#ffffff")
         top.configure(highlightcolor="black")
 
+        # Menu bar configuration
         self.menubar = Menu(top, font="TkMenuFont")
         top.configure(menu=self.menubar)
 
@@ -169,25 +175,27 @@ class Regim:
             label="About"
         )
 
+        # Frames configuration
         self.frame_side = Frame(top)
         self.frame_side.place(relx=-0.02, rely=-0.02, relheight=1.01, relwidth=0.22)
         self.frame_side.configure(relief=SUNKEN)
         self.frame_side.configure(borderwidth="1")
         self.frame_side.configure(relief=SUNKEN)
-        self.frame_side.configure(background="#383838")
+        self.frame_side.configure(background="#202020")  # color #383838
         self.frame_side.configure(highlightbackground="#ffffff")
         self.frame_side.configure(highlightcolor="black")
         self.frame_side.configure(width=215)
 
+        # Registration button
         self.btn_match = Button(self.frame_side)
         self.btn_match.place(relx=0.16, rely=0.87, height=34, width=150)
-        self.btn_match.configure(activebackground="#c55050")
+        self.btn_match.configure(activebackground="#0f306a")
         self.btn_match.configure(activeforeground="white")
         self.btn_match.configure(activeforeground="#ffffff")
-        self.btn_match.configure(background="#ff6b6b")
+        self.btn_match.configure(background=BASIC_COLOR)
         self.btn_match.configure(borderwidth="0")
         self.btn_match.configure(disabledforeground="#a3a3a3")
-        self.btn_match.configure(font=font9)
+        self.btn_match.configure(font=font13)
         self.btn_match.configure(foreground="#ffffff")
         self.btn_match.configure(highlightbackground="#d9d9d9")
         self.btn_match.configure(highlightcolor="black")
@@ -196,112 +204,226 @@ class Regim:
         self.btn_match.configure(relief=FLAT)
         self.btn_match.configure(text='Registration')
 
+        # Side menu
         self.label_side = LabelFrame(self.frame_side)
-        self.label_side.place(relx=0.16, rely=0.05, relheight=0.79, relwidth=0.7)
+        self.label_side.place(relx=0.16, rely=0.085, relheight=0.755, relwidth=0.7)
 
         self.label_side.configure(borderwidth="1")
         self.label_side.configure(foreground="black")
         self.label_side.configure(relief=FLAT)
-        self.label_side.configure(background="#585858")
+        self.label_side.configure(background="#393939")  # color #585858
         self.label_side.configure(width=150)
 
+        # Frame inputs and output
         self.frame_process = Frame(top)
         self.frame_process.place(relx=0.18, rely=0.02, relheight=1.02, relwidth=0.83)
         self.frame_process.configure(borderwidth="1")
-        self.frame_process.configure(background="#cccccc")
+        self.frame_process.configure(background="#5d5f60")
         self.frame_process.configure(highlightbackground="#000000")
         self.frame_process.configure(highlightcolor="#ffffff")
         self.frame_process.configure(width=805)
 
-        self.label_ref = Label(self.frame_process)
-        self.label_ref.place(relx=0.06, rely=0.09, height=200, width=200)
-        self.label_ref.configure(background="#ffffff")
-        self.label_ref.configure(disabledforeground="#a3a3a3")
-        self.label_ref.configure(font=font10)
-        self.label_ref.configure(foreground="#000000")
-        self.label_ref.configure(text='''Reference image''')
-        self.label_ref.configure(width=200)
-        self.label_ref.configure(image=self.empty_image)
-        self.label_ref.image = self.empty_image
+        # Label fixed image
+        self.label_fixed = Label(self.frame_process)
+        self.label_fixed.place(relx=0.06, rely=0.09, height=200, width=200)
+        self.label_fixed.configure(background="#5d5f60")
+        self.label_fixed.configure(disabledforeground="#a3a3a3")
+        self.label_fixed.configure(font=font11)
+        self.label_fixed.configure(foreground="#000000")
+        self.label_fixed.configure(text='''Reference image''')
+        self.label_fixed.configure(width=200)
+        self.label_fixed.configure(image=self.empty_image)
+        self.label_fixed.image = self.empty_image
 
-        self.label_input = Label(self.frame_process)
-        self.label_input.place(relx=0.06, rely=0.48, height=200, width=200)
-        self.label_input.configure(activebackground="#f9f9f9")
-        self.label_input.configure(activeforeground="black")
-        self.label_input.configure(background="#ffffff")
-        self.label_input.configure(cursor="")
-        self.label_input.configure(disabledforeground="#a3a3a3")
-        self.label_input.configure(font=font10)
-        self.label_input.configure(foreground="#000000")
-        self.label_input.configure(highlightbackground="#d9d9d9")
-        self.label_input.configure(highlightcolor="black")
-        self.label_input.configure(text='''Input image''')
-        self.label_input.configure(image=self.empty_image)
-        self.label_input.image = self.empty_image
+        # Label moving image
+        self.label_moving = Label(self.frame_process)
+        self.label_moving.place(relx=0.06, rely=0.48, height=200, width=200)
+        self.label_moving.configure(activebackground="#f9f9f9")
+        self.label_moving.configure(activeforeground="black")
+        self.label_moving.configure(background="#5d5f60")
+        self.label_moving.configure(cursor="")
+        self.label_moving.configure(disabledforeground="#a3a3a3")
+        self.label_moving.configure(font=font11)
+        self.label_moving.configure(foreground="#000000")
+        self.label_moving.configure(highlightbackground="#d9d9d9")
+        self.label_moving.configure(highlightcolor="black")
+        self.label_moving.configure(text='''Input image''')
+        self.label_moving.configure(image=self.empty_image)
+        self.label_moving.image = self.empty_image
 
+        # Label registered image
         self.label_reg = Label(self.frame_process)
         self.label_reg.place(relx=0.41, rely=0.12, height=400, width=400)
-        self.label_reg.configure(background="#ffffff")
+        self.label_reg.configure(background="#5d5f60")
         self.label_reg.configure(disabledforeground="#a3a3a3")
         self.label_reg.configure(foreground="#000000")
         self.label_reg.configure(width=400)
         self.label_reg.configure(image=self.empty_image2)
         self.label_reg.image = self.empty_image2
 
+        # Frame foot
         self.frame_foot = Frame(top)
         self.frame_foot.place(relx=-0.01, rely=0.94, relheight=0.07, relwidth=1.02)
         self.frame_foot.configure(relief=SUNKEN)
         self.frame_foot.configure(borderwidth="1")
         self.frame_foot.configure(relief=SUNKEN)
-        self.frame_foot.configure(background="#383838")
+        self.frame_foot.configure(background="#202020")  # color #383838
         self.frame_foot.configure(highlightbackground="#d9d9d9")
         self.frame_foot.configure(highlightcolor="#ffffff")
         self.frame_foot.configure(width=995)
 
+        # Top frame
         self.Frame1 = Frame(top)
         self.Frame1.place(relx=-0.01, rely=-0.1, relheight=0.14, relwidth=1.03)
         self.Frame1.configure(relief=RIDGE)
         self.Frame1.configure(borderwidth="1")
         self.Frame1.configure(relief=RIDGE)
-        self.Frame1.configure(background="#383838")
+        self.Frame1.configure(background="#202020")
         self.Frame1.configure(highlightbackground="#d9d9d9")
         self.Frame1.configure(highlightcolor="#ffffff")
         self.Frame1.configure(width=1005)
 
-        self.add1_button = Button(self.frame_process)
-        self.add1_button.place(relx=0.32, rely=0.09, height=20, width=20)
-        self.add1_button.configure(activebackground="#d9d9d9")
-        self.add1_button.configure(activeforeground="#000000")
-        self.add1_button.configure(background="#d9d9d9")
-        self.add1_button.configure(borderwidth="0")
-        self.add1_button.configure(disabledforeground="#a3a3a3")
-        self.add1_button.configure(foreground="#000000")
-        self.add1_button.configure(highlightbackground="#d9d9d9")
-        self.add1_button.configure(highlightcolor="black")
-        self._img1 = PhotoImage(file=self.add_btn_path)
-        self.add1_button.configure(image=self._img1)
-        self.add1_button.configure(pady="0")
-        self.add1_button.configure(text='')
-        self.add1_button.configure(width=350)
-        self.add1_button.configure(command=self.add_ref_image)
-
-        self.add2_button = Button(self.frame_process)
-        self.add2_button.place(relx=0.32, rely=0.48, height=20, width=20)
-        self.add2_button.configure(activebackground="#d9d9d9")
-        self.add2_button.configure(activeforeground="#000000")
-        self.add2_button.configure(background="#d9d9d9")
-        self.add2_button.configure(borderwidth="0")
-        self.add2_button.configure(disabledforeground="#a3a3a3")
-        self.add2_button.configure(foreground="#000000")
-        self.add2_button.configure(highlightbackground="#d9d9d9")
-        self.add2_button.configure(highlightcolor="black")
-        self._img2 = PhotoImage(file=self.add_btn_path)
-        self.add2_button.configure(image=self._img2)
-        self.add2_button.configure(pady="0")
-        self.add2_button.configure(text='')
-        self.add2_button.configure(command=self.add_in_image)
+        # # Select input buttons 1 and 2
+        # self.add1_button = Button(self.frame_process)
+        # self.add1_button.place(relx=0.32, rely=0.09, height=20, width=20)
+        # self.add1_button.configure(activebackground="#d9d9d9")
+        # self.add1_button.configure(activeforeground="#000000")
+        # self.add1_button.configure(background="#d9d9d9")
+        # self.add1_button.configure(borderwidth="0")
+        # self.add1_button.configure(disabledforeground="#a3a3a3")
+        # self.add1_button.configure(foreground="#000000")
+        # self.add1_button.configure(highlightbackground="#d9d9d9")
+        # self.add1_button.configure(highlightcolor="black")
+        # self._img1 = PhotoImage(file=self.add_btn_path)
+        # self.add1_button.configure(image=self._img1)
+        # self.add1_button.configure(pady="0")
+        # self.add1_button.configure(text='')
+        # self.add1_button.configure(width=350)
+        # self.add1_button.configure(command=self.add_fixed_image)
+        #
+        # self.add2_button = Button(self.frame_process)
+        # self.add2_button.place(relx=0.32, rely=0.48, height=20, width=20)
+        # self.add2_button.configure(activebackground="#d9d9d9")
+        # self.add2_button.configure(activeforeground="#000000")
+        # self.add2_button.configure(background="#d9d9d9")
+        # self.add2_button.configure(borderwidth="0")
+        # self.add2_button.configure(disabledforeground="#a3a3a3")
+        # self.add2_button.configure(foreground="#000000")
+        # self.add2_button.configure(highlightbackground="#d9d9d9")
+        # self.add2_button.configure(highlightcolor="black")
+        # self._img2 = PhotoImage(file=self.add_btn_path)
+        # self.add2_button.configure(image=self._img2)
+        # self.add2_button.configure(pady="0")
+        # self.add2_button.configure(text='')
+        # self.add2_button.configure(command=self.add_moving_image)
 
         self.btn_match.configure(command=self.do_registration)
+
+        # Left menu labels
+        self.select_input_label = Label(self.label_side)
+        self.select_input_label.place(relx=0, rely=0, height=30, width=150)
+        self.select_input_label.configure(background=BASIC_COLOR)
+        self.select_input_label.configure(disabledforeground="#a3a3a3")
+        self.select_input_label.configure(foreground="#fff")
+        self.select_input_label.configure(font=font11)
+        self.select_input_label.configure(text="Select inputs")
+        self.select_input_label.configure(width=400)
+        # Select fixed image button
+        self.select_fixed_btn = Button(self.label_side)
+        self.select_fixed_btn.place(relx=0, rely=0.08, height=26, width=150)
+        self.select_fixed_btn.configure(background="#393939")
+        self.select_fixed_btn.configure(activebackground="#474747")
+        self.select_fixed_btn.configure(activeforeground="#cccccc")
+        self.select_fixed_btn.configure(disabledforeground="#a3a3a3")
+        self.select_fixed_btn.configure(foreground="#ccc")
+        self.select_fixed_btn.configure(font=font11)
+        self.select_fixed_btn.configure(text="Fixed image")
+        self.select_fixed_btn.configure(width=400)
+        self.select_fixed_btn.configure(borderwidth="0")
+        self.select_fixed_btn.configure(command=self.add_fixed_image)
+        # Select moving image button
+        self.select_moving_btn = Button(self.label_side)
+        self.select_moving_btn.place(relx=0, rely=0.15, height=26, width=150)
+        self.select_moving_btn.configure(background="#393939")
+        self.select_moving_btn.configure(activebackground="#474747")
+        self.select_moving_btn.configure(activeforeground="#cccccc")
+        self.select_moving_btn.configure(disabledforeground="#a3a3a3")
+        self.select_moving_btn.configure(foreground="#ccc")
+        self.select_moving_btn.configure(font=font11)
+        self.select_moving_btn.configure(text="Moving image")
+        self.select_moving_btn.configure(width=400)
+        self.select_moving_btn.configure(borderwidth="0")
+        self.select_moving_btn.configure(command=self.add_moving_image)
+        # Left method label
+        self.select_method_label = Label(self.label_side)
+        self.select_method_label.place(relx=0, rely=0.23, height=30, width=150)
+        self.select_method_label.configure(background=BASIC_COLOR)
+        self.select_method_label.configure(disabledforeground="#a3a3a3")
+        self.select_method_label.configure(foreground="#fff")
+        self.select_method_label.configure(font=font11)
+        self.select_method_label.configure(text="Regim methods")
+        self.select_method_label.configure(width=400)
+        # Select default method button
+        self.select_default_btn = Button(self.label_side)
+        self.select_default_btn.place(relx=0, rely=0.31, height=26, width=150)
+        self.select_default_btn.configure(background="#393939")
+        self.select_default_btn.configure(disabledforeground="#a3a3a3")
+        self.select_default_btn.configure(foreground="#ccc")
+        self.select_default_btn.configure(activebackground="#474747")
+        self.select_default_btn.configure(activeforeground="#cccccc")
+        self.select_default_btn.configure(font=font11)
+        self.select_default_btn.configure(text="Default")
+        self.select_default_btn.configure(width=400)
+        self.select_default_btn.configure(borderwidth="0")
+        self.select_default_btn.configure(command="")
+        # Select exhaustive method button
+        self.select_exhaustive_btn = Button(self.label_side)
+        self.select_exhaustive_btn.place(relx=0, rely=0.38, height=26, width=150)
+        self.select_exhaustive_btn.configure(background="#393939")
+        self.select_exhaustive_btn.configure(disabledforeground="#a3a3a3")
+        self.select_exhaustive_btn.configure(foreground="#ccc")
+        self.select_exhaustive_btn.configure(activebackground="#474747")
+        self.select_exhaustive_btn.configure(activeforeground="#cccccc")
+        self.select_exhaustive_btn.configure(font=font11)
+        self.select_exhaustive_btn.configure(text="Exhaustive")
+        self.select_exhaustive_btn.configure(width=400)
+        self.select_exhaustive_btn.configure(borderwidth="0")
+        self.select_exhaustive_btn.configure(command="")
+        # Left parameters label
+        self.select_parameters_label = Label(self.label_side)
+        self.select_parameters_label.place(relx=0, rely=0.46, height=30, width=150)
+        self.select_parameters_label.configure(background=BASIC_COLOR)
+        self.select_parameters_label.configure(disabledforeground="#a3a3a3")
+        self.select_parameters_label.configure(foreground="#fff")
+        self.select_parameters_label.configure(font=font11)
+        self.select_parameters_label.configure(text="Parameters")
+        self.select_parameters_label.configure(width=400)
+        # Iterations input
+        self.iterations_input = Button(self.label_side)
+        self.iterations_input.place(relx=0, rely=0.54, height=26, width=150)
+        self.iterations_input.configure(background="#393939")
+        self.iterations_input.configure(disabledforeground="#a3a3a3")
+        self.iterations_input.configure(foreground="#ccc")
+        self.iterations_input.configure(activebackground="#474747")
+        self.iterations_input.configure(activeforeground="#cccccc")
+        self.iterations_input.configure(font=font11)
+        self.iterations_input.configure(text="Iterations")
+        self.iterations_input.configure(width=400)
+        self.iterations_input.configure(borderwidth="0")
+        self.iterations_input.configure(command="")
+        # Min step input
+        self.minstep_input = Button(self.label_side)
+        self.minstep_input.place(relx=0, rely=0.61, height=26, width=150)
+        self.minstep_input.configure(background="#393939")
+        self.minstep_input.configure(disabledforeground="#a3a3a3")
+        self.minstep_input.configure(foreground="#ccc")
+        self.minstep_input.configure(activebackground="#474747")
+        self.minstep_input.configure(activeforeground="#cccccc")
+        self.minstep_input.configure(font=font11)
+        self.minstep_input.configure(text="Min step")
+        self.minstep_input.configure(width=400)
+        self.minstep_input.configure(borderwidth="0")
+        self.minstep_input.configure(command="")
 
     def open_file(self):
         """Open a file"""
@@ -318,27 +440,27 @@ class Regim:
         from PIL import ImageTk, Image
 
         try:
-            images_matched = Met.match(self.imref_path, self.iminput_path)
+            images_matched = Met.match(self.im_fixed_path, self.im_moving_path)
 
             image_matched = Image.fromarray(images_matched)
-            image_matched.thumbnail(out_size, Image.ANTIALIAS)
+            image_matched.thumbnail(OUT_SIZE, Image.ANTIALIAS)
             image_matched = ImageTk.PhotoImage(image_matched)
 
             self.label_reg.configure(image=image_matched)
             self.label_reg.image = image_matched
 
-            # os.remove(self.imref_path)
-            # os.remove(self.iminput_path)
+            # os.remove(self.im_fixed_path)
+            # os.remove(self.im_moving_path)
         except:
             pass
 
-    def add_ref_image(self):
+    def add_fixed_image(self):
         """Open an image file and show it in the GUI"""
         from PIL import ImageTk, Image
-        self.png_dest_1 = my_png_dest_1
+        self.png_dest_1 = MY_PNG_DEST_1
         # Searching file
         try:
-            self.imref_path = askopenfilename(
+            self.im_fixed_path = askopenfilename(
                         initialdir=".",
                         filetypes=(
                             ("Dicom (*.DCM)", "*.dcm"),
@@ -348,30 +470,30 @@ class Regim:
                         title="Choose image 1."
                        )
             # Converting .dcm file to .png for manipulation
-            if self.imref_path[-3:] == 'dcm':
-                Met.dicom_to_png(self.imref_path, self.png_dest_1)
+            if self.im_fixed_path[-3:] == 'dcm':
+                Met.dicom_to_png(self.im_fixed_path, self.png_dest_1)
             else:
-                self.png_dest_1 = self.imref_path
+                self.png_dest_1 = self.im_fixed_path
 
             # Place it in the GUI label
             png_file = Image.open(self.png_dest_1)
-            png_file.thumbnail(in_size, Image.ANTIALIAS)
+            png_file.thumbnail(IN_SIZE, Image.ANTIALIAS)
             png_image = ImageTk.PhotoImage(png_file)
-            self.label_ref.configure(image=png_image)
-            self.label_ref.image = png_image
+            self.label_fixed.configure(image=png_image)
+            self.label_fixed.image = png_image
 
-            self.imref_path = self.png_dest_1
+            self.im_fixed_path = self.png_dest_1
 
         except:
             pass
 
-    def add_in_image(self):
+    def add_moving_image(self):
         """Open an image file and show it in the GUI"""
         from PIL import ImageTk, Image
-        self.png_dest_2 = my_png_dest_2
+        self.png_dest_2 = MY_PNG_DEST_2
         try:
             # Searching file
-            self.iminput_path = askopenfilename(
+            self.im_moving_path = askopenfilename(
                             initialdir=".",
                             filetypes=(
                                 ("Dicom (*.DCM)", "*.dcm"),
@@ -381,19 +503,19 @@ class Regim:
                             title="Choose image 2."
                             )
             # Converting .dcm file to .png for manipulation
-            if self.iminput_path[-3:] == 'dcm':
-                Met.dicom_to_png(self.iminput_path, self.png_dest_2)
+            if self.im_moving_path[-3:] == 'dcm':
+                Met.dicom_to_png(self.im_moving_path, self.png_dest_2)
             else:
-                self.png_dest_2 = self.iminput_path
+                self.png_dest_2 = self.im_moving_path
 
             # Place it in the GUI label
             png_file = Image.open(self.png_dest_2)
-            png_file.thumbnail(in_size, Image.ANTIALIAS)
+            png_file.thumbnail(IN_SIZE, Image.ANTIALIAS)
             png_image = ImageTk.PhotoImage(png_file)
-            self.label_input.configure(image=png_image)
-            self.label_input.image = png_image
+            self.label_moving.configure(image=png_image)
+            self.label_moving.image = png_image
 
-            self.iminput_path = self.png_dest_2
+            self.im_moving_path = self.png_dest_2
 
         except:
             pass
@@ -405,8 +527,8 @@ class Regim:
             my_imreg = Reg.Imreg(self.png_dest_1, self.png_dest_2)
             registered_image = my_imreg.image_registration_method3()
             # registered_image = Image.fromarray(self.registered_image)
-            registered_image.thumbnail(out_size, Image.ANTIALIAS)
-            registered_image.resize(out_size, Image.ANTIALIAS)
+            registered_image.thumbnail(OUT_SIZE, Image.ANTIALIAS)
+            registered_image.save(MY_OUT_DEST)
             registered_image = ImageTk.PhotoImage(registered_image)
 
             self.label_reg.configure(image=registered_image)

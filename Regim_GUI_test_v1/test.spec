@@ -21,9 +21,9 @@ exe = EXE(pyz,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='Regim-gui-test-2.0',
+          name='Regim-page-test-2.1',
           debug=False,
           strip=False,
           upx=True,
           runtime_tmpdir=None,
-          console=False , version='version.txt', icon='icono.ico')
+          console=False , version='version.txt', icon='images/icon.ico')

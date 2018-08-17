@@ -17,7 +17,7 @@ VSVersionInfo(
 		    [
 			StringStruct('Comments', 'Designed and coded by FRyCK S.A.'),
 			StringStruct('CompanyName', 'FRyCK S.A.'),
-			StringStruct('FileDescription', 'Esto es un virus :)'),
+			StringStruct('FileDescription', 'Image registration software'),
 			StringStruct('FileVersion', '1, 10, 0, 2'),
 			StringStruct('InternalName', 'REGIM'),
 			StringStruct('LegalCopyright', 'Copyright 2018, Inc.'),
