@@ -13,7 +13,7 @@
 import Imreg.Methods as Met
 import Imreg.RegistrationMethods as Reg
 from tkinter.filedialog import askopenfilename
-# import time
+import time
 
 try:
     from Tkinter import *
@@ -71,9 +71,10 @@ def exit_btn():
 # -----------------------------------------------------------------------------
 # GLOBAL VARIABLES
 # -----------------------------------------------------------------------------
-MY_ICON = 'icon.ico'
-MY_ADD_BTN_PATH = 'add_btn.png'
-MY_EMPTY_IMAGE_PATH = 'empty.jpg'
+"""When building .exe file, remember to change images/*. to *. """
+MY_ICON = 'images/icon.ico'
+MY_ADD_BTN_PATH = 'images/add_btn.png'
+MY_EMPTY_IMAGE_PATH = 'images/empty.jpg'
 MY_PNG_DEST_1 = 'input_1.png'
 MY_PNG_DEST_2 = 'input_2.png'
 MY_OUT_DEST = 'output.png'
@@ -425,6 +426,19 @@ class Regim:
         self.minstep_input.configure(borderwidth="0")
         self.minstep_input.configure(command="")
 
+        # Progress bar
+        s = ttk.Style()
+        s.theme_use('clam')
+        s.configure("red.Horizontal.TProgressbar", troughcolor='#202020', background=BASIC_COLOR)
+        self.progress_bar = ttk.Progressbar(self.frame_foot,
+                                            style="red.Horizontal.TProgressbar",
+                                            orient='horizontal',
+                                            mode='determinate')
+        self.progress_bar.place(relx=0, rely=0, height=40, width=990)
+        self.mask = Label(self.frame_foot)
+        self.mask.place(relx=0, rely=0, height=30, width=990)
+        self.mask.configure(background='#202020')
+
     def open_file(self):
         """Open a file"""
         try:
@@ -524,17 +538,43 @@ class Regim:
         """Do the registration for the fixed and moving image"""
         from PIL import Image, ImageTk
         try:
+            self.progress_bar['maximum'] = 100
+            time.sleep(0.07)
+            self.progress_bar['value'] = 20
+            self.progress_bar.update()
+
             my_imreg = Reg.Imreg(self.png_dest_1, self.png_dest_2)
             registered_image = my_imreg.image_registration_method3()
+
+            self.progress_bar['value'] = 70
+            self.progress_bar.update()
+            time.sleep(0.5)
+
             # registered_image = Image.fromarray(self.registered_image)
             registered_image.thumbnail(OUT_SIZE, Image.ANTIALIAS)
             registered_image.save(MY_OUT_DEST)
             registered_image = ImageTk.PhotoImage(registered_image)
 
+            self.progress_bar['value'] = 100
+            self.progress_bar.update()
+            time.sleep(0.5)
+
             self.label_reg.configure(image=registered_image)
             self.label_reg.image = registered_image
+
+            self.progress_bar['value'] = 0
         except:
             pass
+
+    def run_progress_bar(self):
+        """Run the progress bar"""
+        self.progress_bar['maximum'] = 100
+        for i in range(101):
+            time.sleep(0.07)
+            self.progress_bar['value'] = i
+            self.progress_bar.update()
+
+        self.progress_bar['value'] = 0
 
 
 if __name__ == '__main__':
