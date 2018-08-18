@@ -120,6 +120,10 @@ class Imreg:
 
             outTx = R.Execute(fixed, moving)
 
+            info_data = " Iteration: {0}".format(R.GetOptimizerIteration()) + "\n" + "\n" + \
+                        " Metric value:" + "\n" + format(R.GetMetricValue())
+            self.info_data = info_data
+
             if not "SITK_NOSHOW" in os.environ:
                 resampler = Sitk.ResampleImageFilter()
                 resampler.SetReferenceImage(fixed)
@@ -253,6 +257,10 @@ class Imreg:
 
             outTx = R.Execute(fixed, moving)
 
+            info_data = " Iteration: {0}".format(R.GetOptimizerIteration()) + "\n" + "\n" + \
+                        " Metric value:" + "\n" + format(R.GetMetricValue())
+            self.info_data = info_data
+
             if not "SITK_NOSHOW" in os.environ:
                 resampler = Sitk.ResampleImageFilter()
                 resampler.SetReferenceImage(fixed)
@@ -365,6 +373,10 @@ class Imreg:
 
             outTx.AddTransform(R.Execute(fixed, moving))
 
+            info_data = " Iteration: {0}".format(R.GetOptimizerIteration()) + "\n" + "\n" + \
+                        " Metric value:" + "\n" + format(R.GetMetricValue())
+            self.info_data = info_data
+
             if not "SITK_NOSHOW" in os.environ:
 
                 resampler = Sitk.ResampleImageFilter()
@@ -418,6 +430,10 @@ class Imreg:
             R.SetInterpolator(Sitk.sitkLinear)
 
             outTx = R.Execute(fixed, moving)
+
+            info_data = " Iteration: {0}".format(R.GetOptimizerIteration()) + "\n" + "\n" + \
+                        " Metric value:" + "\n" + format(R.GetMetricValue())
+            self.info_data = info_data
 
             if not "SITK_NOSHOW" in os.environ:
                 resampler = Sitk.ResampleImageFilter()
