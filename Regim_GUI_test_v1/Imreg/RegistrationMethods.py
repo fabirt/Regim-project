@@ -14,6 +14,7 @@ class Imreg:
         """This class have a series of image registration methods"""
         self.fixed_path = fixed_path
         self.moving_path = moving_path
+        self.info_data = None
 
     def demons_registration(self):
         try:
@@ -204,6 +205,10 @@ class Imreg:
             R.SetInterpolator(Sitk.sitkLinear)
 
             outTx = R.Execute(fixed, moving)
+
+            info_data = " Iteration: {0}".format(R.GetOptimizerIteration()) + "\n" + "\n" + \
+                        " Metric value:" + "\n" + format(R.GetMetricValue())
+            self.info_data = info_data
 
             if not "SITK_NOSHOW" in os.environ:
                 resampler = Sitk.ResampleImageFilter()

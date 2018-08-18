@@ -10,7 +10,7 @@
 # -----------------------------------------------------------------------------
 # import sys
 # import os
-import Imreg.Methods as Met
+import Imreg.Resources as Res
 import Imreg.RegistrationMethods as Reg
 from tkinter.filedialog import askopenfilename
 import time
@@ -99,9 +99,9 @@ class Regim:
         from PIL import ImageTk, Image
 
         # Loading required images and paths
-        self.icon_path = Met.resource_path(MY_ICON)
-        self.add_btn_path = Met.resource_path(MY_ADD_BTN_PATH)
-        self.empty_image_path = Met.resource_path(MY_EMPTY_IMAGE_PATH)
+        self.icon_path = Res.resource_path(MY_ICON)
+        self.add_btn_path = Res.resource_path(MY_ADD_BTN_PATH)
+        self.empty_image_path = Res.resource_path(MY_EMPTY_IMAGE_PATH)
         self.png_dest_1 = MY_PNG_DEST_1
         self.png_dest_2 = MY_PNG_DEST_2
         self.im_fixed_path = None
@@ -112,6 +112,8 @@ class Regim:
         _compcolor = '#d9d9d9'  # X11 color: 'gray85'
         _ana1color = '#d9d9d9'  # X11 color: 'gray85'
         _ana2color = '#d9d9d9'  # X11 color: 'gray85'
+        font9 = "-family Verdana -size 9 -weight normal -slant roman" \
+                 " -underline 0 -overstrike 0"
         font11 = "-family Verdana -size 11 -weight normal -slant roman"  \
             " -underline 0 -overstrike 0"
         font13 = "-family Verdana -size 13 -weight normal -slant roman "  \
@@ -237,9 +239,17 @@ class Regim:
         self.frame_registered = Frame(self.frame_outputs)
         self.frame_registered.place(relx=0.11, rely=0.09, height=202, width=202)
         self.frame_registered.configure(borderwidth="0")
-        self.frame_registered.configure(background="#fff")
+        self.frame_registered.configure(background="#ccc")
         self.frame_registered.configure(highlightbackground="#000000")
         self.frame_registered.configure(highlightcolor="#ffffff")
+
+        # Data frame
+        self.frame_data = Frame(self.frame_outputs)
+        self.frame_data.place(relx=0.65, rely=0.09, height=202, width=122)
+        self.frame_data.configure(borderwidth="0")
+        self.frame_data.configure(background="#ccc")
+        self.frame_data.configure(highlightbackground="#000000")
+        self.frame_data.configure(highlightcolor="#ffffff")
 
         # Right frame
         self.frame_right = Frame(self.frame_process)
@@ -287,10 +297,28 @@ class Regim:
         self.label_reg.configure(cursor="")
         self.label_reg.configure(disabledforeground="#a3a3a3")
         self.label_reg.configure(font=font11)
-        self.label_reg.configure(foreground="#000000")
+        self.label_reg.configure(foreground="#ccc")
         self.label_reg.configure(highlightbackground="#d9d9d9")
         self.label_reg.configure(highlightcolor="black")
         self.label_reg.configure(text='''Registered image''')
+
+        # Data label
+        self.label_data = Label(self.frame_data)
+        self.label_data.place(relx=0.005, rely=0.003, height=30, width=120)
+        self.label_data.configure(background="#444749")
+        self.label_data.configure(cursor="")
+        self.label_data.configure(font=font9)
+        self.label_data.configure(foreground="#ccc")
+        self.label_data.configure(text='Data')
+
+        # Info label
+        self.label_info = Label(self.frame_data)
+        self.label_info.place(relx=0.005, rely=0.155, height=170, width=120)
+        self.label_info.configure(background="#444749")
+        self.label_info.configure(cursor="")
+        self.label_info.configure(font=font9)
+        self.label_info.configure(foreground="#ccc")
+        self.label_info.configure(wraplength=100)
 
         # Frame foot
         self.frame_foot = Frame(top)
@@ -331,22 +359,6 @@ class Regim:
         # self.add1_button.configure(text='')
         # self.add1_button.configure(width=350)
         # self.add1_button.configure(command=self.add_fixed_image)
-        #
-        # self.add2_button = Button(self.frame_process)
-        # self.add2_button.place(relx=0.32, rely=0.48, height=20, width=20)
-        # self.add2_button.configure(activebackground="#d9d9d9")
-        # self.add2_button.configure(activeforeground="#000000")
-        # self.add2_button.configure(background="#d9d9d9")
-        # self.add2_button.configure(borderwidth="0")
-        # self.add2_button.configure(disabledforeground="#a3a3a3")
-        # self.add2_button.configure(foreground="#000000")
-        # self.add2_button.configure(highlightbackground="#d9d9d9")
-        # self.add2_button.configure(highlightcolor="black")
-        # self._img2 = PhotoImage(file=self.add_btn_path)
-        # self.add2_button.configure(image=self._img2)
-        # self.add2_button.configure(pady="0")
-        # self.add2_button.configure(text='')
-        # self.add2_button.configure(command=self.add_moving_image)
 
         self.btn_match.configure(command=self.do_registration)
 
@@ -484,7 +496,7 @@ class Regim:
         from PIL import ImageTk, Image
 
         try:
-            images_matched = Met.match(self.im_fixed_path, self.im_moving_path)
+            images_matched = Res.match(self.im_fixed_path, self.im_moving_path)
 
             image_matched = Image.fromarray(images_matched)
             image_matched.thumbnail(OUT_SIZE, Image.ANTIALIAS)
@@ -515,7 +527,7 @@ class Regim:
                        )
             # Converting .dcm file to .png for manipulation
             if self.im_fixed_path[-3:] == 'dcm':
-                Met.dicom_to_png(self.im_fixed_path, self.png_dest_1)
+                Res.dicom_to_png(self.im_fixed_path, self.png_dest_1)
             else:
                 self.png_dest_1 = self.im_fixed_path
 
@@ -548,7 +560,7 @@ class Regim:
                             )
             # Converting .dcm file to .png for manipulation
             if self.im_moving_path[-3:] == 'dcm':
-                Met.dicom_to_png(self.im_moving_path, self.png_dest_2)
+                Res.dicom_to_png(self.im_moving_path, self.png_dest_2)
             else:
                 self.png_dest_2 = self.im_moving_path
 
@@ -589,6 +601,8 @@ class Regim:
 
             self.label_reg.configure(image=registered_image)
             self.label_reg.image = registered_image
+
+            self.label_info.configure(text=my_imreg.info_data)
 
             self.progress_bar['value'] = 0
         except:
