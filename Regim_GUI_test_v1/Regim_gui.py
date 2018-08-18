@@ -14,6 +14,7 @@ import Imreg.Resources as Res
 import Imreg.RegistrationMethods as Reg
 from tkinter.filedialog import askopenfilename
 import time
+import random
 
 try:
     from Tkinter import *
@@ -581,12 +582,12 @@ class Regim:
         from PIL import Image, ImageTk
         try:
             self.progress_bar['maximum'] = 100
-            self.run_progress_bar(1, 50)
+            self.run_progress_bar(1, random.randint(30, 60))
 
             my_imreg = Reg.Imreg(self.png_dest_1, self.png_dest_2)
             registered_image = my_imreg.image_registration_method3()
 
-            self.progress_bar['value'] = 70
+            self.progress_bar['value'] = random.randint(70, 90)
             self.progress_bar.update()
             time.sleep(0.1)
 
