@@ -224,6 +224,32 @@ class Regim:
         self.frame_process.configure(highlightcolor="#ffffff")
         self.frame_process.configure(width=805)
 
+        # Frame Outputs
+        self.frame_outputs = Frame(self.frame_process)
+        self.frame_outputs.place(relx=0.37, rely=0, relheight=1.02)
+        self.frame_outputs.configure(borderwidth="0")
+        self.frame_outputs.configure(background="#444749")
+        self.frame_outputs.configure(highlightbackground="#000000")
+        self.frame_outputs.configure(highlightcolor="#ffffff")
+        self.frame_outputs.configure(width=464)
+
+        # Registered image frame
+        self.frame_registered = Frame(self.frame_outputs)
+        self.frame_registered.place(relx=0.11, rely=0.09, height=202, width=202)
+        self.frame_registered.configure(borderwidth="0")
+        self.frame_registered.configure(background="#fff")
+        self.frame_registered.configure(highlightbackground="#000000")
+        self.frame_registered.configure(highlightcolor="#ffffff")
+
+        # Right frame
+        self.frame_right = Frame(self.frame_process)
+        self.frame_right.place(relx=0.946, rely=0, relheight=1.02)
+        self.frame_right.configure(borderwidth="0")
+        self.frame_right.configure(background="#1d1f21")
+        self.frame_right.configure(highlightbackground="#000000")
+        self.frame_right.configure(highlightcolor="#ffffff")
+        self.frame_right.configure(width=40)
+
         # Label fixed image
         self.label_fixed = Label(self.frame_process)
         self.label_fixed.place(relx=0.06, rely=0.09, height=200, width=200)
@@ -231,7 +257,7 @@ class Regim:
         self.label_fixed.configure(disabledforeground="#a3a3a3")
         self.label_fixed.configure(font=font11)
         self.label_fixed.configure(foreground="#000000")
-        self.label_fixed.configure(text='''Reference image''')
+        self.label_fixed.configure(text='''Fixed image''')
         self.label_fixed.configure(width=200)
         self.label_fixed.configure(image=self.empty_image)
         self.label_fixed.image = self.empty_image
@@ -248,19 +274,23 @@ class Regim:
         self.label_moving.configure(foreground="#000000")
         self.label_moving.configure(highlightbackground="#d9d9d9")
         self.label_moving.configure(highlightcolor="black")
-        self.label_moving.configure(text='''Input image''')
+        self.label_moving.configure(text='''Moving image''')
         self.label_moving.configure(image=self.empty_image)
         self.label_moving.image = self.empty_image
 
         # Label registered image
-        self.label_reg = Label(self.frame_process)
-        self.label_reg.place(relx=0.41, rely=0.12, height=400, width=400)
-        self.label_reg.configure(background="#5d5f60")
+        self.label_reg = Label(self.frame_registered)
+        self.label_reg.place(relx=0.003, rely=0.003, height=200, width=200)
+        self.label_reg.configure(activebackground="#f9f9f9")
+        self.label_reg.configure(activeforeground="black")
+        self.label_reg.configure(background="#444749")
+        self.label_reg.configure(cursor="")
         self.label_reg.configure(disabledforeground="#a3a3a3")
+        self.label_reg.configure(font=font11)
         self.label_reg.configure(foreground="#000000")
-        self.label_reg.configure(width=400)
-        self.label_reg.configure(image=self.empty_image2)
-        self.label_reg.image = self.empty_image2
+        self.label_reg.configure(highlightbackground="#d9d9d9")
+        self.label_reg.configure(highlightcolor="black")
+        self.label_reg.configure(text='''Registered image''')
 
         # Frame foot
         self.frame_foot = Frame(top)
@@ -274,15 +304,15 @@ class Regim:
         self.frame_foot.configure(width=995)
 
         # Top frame
-        self.Frame1 = Frame(top)
-        self.Frame1.place(relx=-0.01, rely=-0.1, relheight=0.14, relwidth=1.03)
-        self.Frame1.configure(relief=RIDGE)
-        self.Frame1.configure(borderwidth="1")
-        self.Frame1.configure(relief=RIDGE)
-        self.Frame1.configure(background="#202020")
-        self.Frame1.configure(highlightbackground="#d9d9d9")
-        self.Frame1.configure(highlightcolor="#ffffff")
-        self.Frame1.configure(width=1005)
+        self.frame_top = Frame(top)
+        self.frame_top.place(relx=-0.01, rely=-0.1, relheight=0.14, relwidth=1.03)
+        self.frame_top.configure(relief=RIDGE)
+        self.frame_top.configure(borderwidth="1")
+        self.frame_top.configure(relief=RIDGE)
+        self.frame_top.configure(background="#202020")
+        self.frame_top.configure(highlightbackground="#d9d9d9")
+        self.frame_top.configure(highlightcolor="#ffffff")
+        self.frame_top.configure(width=1005)
 
         # # Select input buttons 1 and 2
         # self.add1_button = Button(self.frame_process)
@@ -436,7 +466,7 @@ class Regim:
                                             mode='determinate')
         self.progress_bar.place(relx=0, rely=0, height=40, width=990)
         self.mask = Label(self.frame_foot)
-        self.mask.place(relx=0, rely=0, height=30, width=990)
+        self.mask.place(relx=0, rely=0, height=29, width=990)
         self.mask.configure(background='#202020')
 
     def open_file(self):
@@ -539,25 +569,23 @@ class Regim:
         from PIL import Image, ImageTk
         try:
             self.progress_bar['maximum'] = 100
-            time.sleep(0.07)
-            self.progress_bar['value'] = 20
-            self.progress_bar.update()
+            self.run_progress_bar(1, 50)
 
             my_imreg = Reg.Imreg(self.png_dest_1, self.png_dest_2)
             registered_image = my_imreg.image_registration_method3()
 
             self.progress_bar['value'] = 70
             self.progress_bar.update()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
             # registered_image = Image.fromarray(self.registered_image)
-            registered_image.thumbnail(OUT_SIZE, Image.ANTIALIAS)
+            registered_image.thumbnail(IN_SIZE, Image.ANTIALIAS)
             registered_image.save(MY_OUT_DEST)
             registered_image = ImageTk.PhotoImage(registered_image)
 
             self.progress_bar['value'] = 100
             self.progress_bar.update()
-            time.sleep(0.5)
+            time.sleep(0.2)
 
             self.label_reg.configure(image=registered_image)
             self.label_reg.image = registered_image
@@ -566,15 +594,15 @@ class Regim:
         except:
             pass
 
-    def run_progress_bar(self):
+    def run_progress_bar(self, start, stop):
         """Run the progress bar"""
-        self.progress_bar['maximum'] = 100
-        for i in range(101):
-            time.sleep(0.07)
+        # self.progress_bar['maximum'] = 100
+        for i in range(start, stop):
+            time.sleep(0.015)
             self.progress_bar['value'] = i
             self.progress_bar.update()
 
-        self.progress_bar['value'] = 0
+        # self.progress_bar['value'] = 0
 
 
 if __name__ == '__main__':
