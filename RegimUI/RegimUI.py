@@ -259,6 +259,14 @@ class Regim:
         self.frame_registered.configure(highlightbackground="#000000")
         self.frame_registered.configure(highlightcolor="#ffffff")
 
+        # Registered B&W image frame
+        self.frame_bw = Frame(self.frame_outputs)
+        self.frame_bw.place(relx=0.11, rely=0.498, height=202, width=202)
+        self.frame_bw.configure(borderwidth="0")
+        self.frame_bw.configure(background="#ccc")
+        self.frame_bw.configure(highlightbackground="#000000")
+        self.frame_bw.configure(highlightcolor="#ffffff")
+
         # Data frame
         self.frame_data = Frame(self.frame_outputs)
         self.frame_data.place(relx=0.59, rely=0.08, height=202, width=122)
@@ -275,6 +283,38 @@ class Regim:
         self.frame_right.configure(highlightbackground="#000000")
         self.frame_right.configure(highlightcolor="#ffffff")
         self.frame_right.configure(width=40)
+
+        # Frame slider 1
+        self.frame_slider_1 = Frame(self.frame_process)
+        self.frame_slider_1.place(relx=0.05, rely=0.41, height=17, width=200)
+        self.frame_slider_1.configure(borderwidth="0")
+        self.frame_slider_1.configure(background="#000")
+        self.frame_slider_1.configure(highlightbackground="#000000")
+        self.frame_slider_1.configure(highlightcolor="#ffffff")
+
+        # Brightness slider 1
+        self.scale_br_fixed = Scale(self.frame_slider_1, from_=0, to=3, orient=HORIZONTAL, resolution=0.2)
+        self.scale_br_fixed.place(relx=0.0, rely=-1.2, width=200)
+        self.scale_br_fixed.configure(background="#000")
+        self.scale_br_fixed.configure(borderwidth="0")
+        self.scale_br_fixed.configure(command=self.edit_fixed)
+        self.scale_br_fixed.set(1)
+
+        # Frame slider 2
+        self.frame_slider_2 = Frame(self.frame_process)
+        self.frame_slider_2.place(relx=0.05, rely=0.84, height=17, width=200)
+        self.frame_slider_2.configure(borderwidth="0")
+        self.frame_slider_2.configure(background="#000")
+        self.frame_slider_2.configure(highlightbackground="#000000")
+        self.frame_slider_2.configure(highlightcolor="#ffffff")
+
+        # Brightness slider 2
+        self.scale_br_moving = Scale(self.frame_slider_2, from_=0, to=3, orient=HORIZONTAL, resolution=0.2)
+        self.scale_br_moving.place(relx=0.0, rely=-1.2, width=200)
+        self.scale_br_moving.configure(background="#000")
+        self.scale_br_moving.configure(borderwidth="0")
+        self.scale_br_moving.configure(command=self.edit_moving)
+        self.scale_br_moving.set(1)
 
         # Label fixed image
         self.label_fixed = Label(self.frame_process)
@@ -318,6 +358,14 @@ class Regim:
         self.label_reg.configure(highlightcolor="black")
         self.label_reg.configure(text='''Registered image''')
 
+        # Label B&W registered image
+        self.label_bw = Label(self.frame_bw)
+        self.label_bw.place(relx=0.003, rely=0.003, height=200, width=200)
+        self.label_bw.configure(activebackground="#f9f9f9")
+        self.label_bw.configure(activeforeground="black")
+        self.label_bw.configure(background="#444749")
+        self.label_bw.configure(cursor="")
+
         # Data label
         self.label_data = Label(self.frame_data)
         self.label_data.place(relx=0.005, rely=0.003, height=30, width=120)
@@ -353,6 +401,7 @@ class Regim:
         self.label_dicom_data_1.configure(font=font9)
         self.label_dicom_data_1.configure(foreground="#ccc")
         self.label_dicom_data_1.configure(text='')
+        self.label_dicom_data_1.configure(wraplength=120)
 
         # Title DICOM info 2
         self.label_title_2 = Label(self.frame_dicom_info_2)
@@ -371,6 +420,7 @@ class Regim:
         self.label_dicom_data_2.configure(font=font9)
         self.label_dicom_data_2.configure(foreground="#ccc")
         self.label_dicom_data_2.configure(text='')
+        self.label_dicom_data_2.configure(wraplength=120)
 
         # Frame foot
         self.frame_foot = Frame(top)
@@ -550,14 +600,18 @@ class Regim:
                        )
             # Converting .dcm file to .png for manipulation
             if self.im_fixed_path[-3:] == 'dcm':
-                Res.dicom_to_png(self.im_fixed_path, self.png_dest_1)
+                convert = Res.Convert()
+                convert.dicom_to_png(self.im_fixed_path, self.png_dest_1)
+                dicom_info = convert.dicom_file_info
+                self.label_dicom_data_1.configure(text=dicom_info)
             else:
                 self.png_dest_1 = self.im_fixed_path
+                self.label_dicom_data_1.configure(text="None")
 
             # Place it in the GUI label
-            png_file = Image.open(self.png_dest_1)
-            png_file.thumbnail(IN_SIZE, Image.ANTIALIAS)
-            png_image = ImageTk.PhotoImage(png_file)
+            self.png_fixed_img = Image.open(self.png_dest_1)
+            self.png_fixed_img.thumbnail(IN_SIZE, Image.ANTIALIAS)
+            png_image = ImageTk.PhotoImage(self.png_fixed_img)
             self.label_fixed.configure(image=png_image)
             self.label_fixed.image = png_image
 
@@ -583,14 +637,18 @@ class Regim:
                             )
             # Converting .dcm file to .png for manipulation
             if self.im_moving_path[-3:] == 'dcm':
-                Res.dicom_to_png(self.im_moving_path, self.png_dest_2)
+                convert = Res.Convert()
+                convert.dicom_to_png(self.im_moving_path, self.png_dest_2)
+                dicom_info = convert.dicom_file_info
+                self.label_dicom_data_2.configure(text=dicom_info)
             else:
                 self.png_dest_2 = self.im_moving_path
+                self.label_dicom_data_2.configure(text="None")
 
             # Place it in the GUI label
-            png_file = Image.open(self.png_dest_2)
-            png_file.thumbnail(IN_SIZE, Image.ANTIALIAS)
-            png_image = ImageTk.PhotoImage(png_file)
+            self.png_moving_img = Image.open(self.png_dest_2)
+            self.png_moving_img.thumbnail(IN_SIZE, Image.ANTIALIAS)
+            png_image = ImageTk.PhotoImage(self.png_moving_img)
             self.label_moving.configure(image=png_image)
             self.label_moving.image = png_image
 
@@ -617,6 +675,11 @@ class Regim:
             # registered_image = Image.fromarray(self.registered_image)
             registered_image.thumbnail(IN_SIZE, Image.ANTIALIAS)
             registered_image.save(MY_OUT_DEST)
+
+            copy = registered_image
+            bw = copy.convert("L")
+
+            bw = ImageTk.PhotoImage(bw)
             registered_image = ImageTk.PhotoImage(registered_image)
 
             self.progress_bar['value'] = 100
@@ -625,6 +688,9 @@ class Regim:
 
             self.label_reg.configure(image=registered_image)
             self.label_reg.image = registered_image
+
+            self.label_bw.configure(image=bw)
+            self.label_bw.image = bw
 
             self.label_info.configure(text=my_imreg.info_data)
 
@@ -664,6 +730,26 @@ class Regim:
                 os.remove(MY_OUT_DEST)
         else:
             pass
+
+    def edit_fixed(self, instance):
+        """Edit fixed image brightness"""
+        from PIL import ImageTk, ImageEnhance
+        if self.im_fixed_path is not None:
+            edit = ImageEnhance.Brightness(self.png_fixed_img)
+            p = edit.enhance(self.scale_br_fixed.get())
+            edit_image = ImageTk.PhotoImage(p)
+            self.label_fixed.configure(image=edit_image)
+            self.label_fixed.image = edit_image
+
+    def edit_moving(self, instance):
+        """Edit moving image brightness"""
+        from PIL import ImageTk, ImageEnhance
+        if self.im_moving_path is not None:
+            edit = ImageEnhance.Brightness(self.png_moving_img)
+            p = edit.enhance(self.scale_br_moving.get())
+            edit_image = ImageTk.PhotoImage(p)
+            self.label_moving.configure(image=edit_image)
+            self.label_moving.image = edit_image
 
 
 if __name__ == '__main__':
