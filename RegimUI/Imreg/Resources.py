@@ -28,6 +28,7 @@ def resource_path(relative_path):
 
 
 class Convert:
+
     def __init__(self):
         self.dicom_file_info = None
 

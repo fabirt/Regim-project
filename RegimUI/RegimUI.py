@@ -583,6 +583,16 @@ class Regim:
         self.mask.place(relx=0, rely=0, height=31, width=1215)
         self.mask.configure(background='#202020')
 
+        # Success bar
+        ss = ttk.Style()
+        ss.theme_use('clam')
+        ss.configure("blue.Horizontal.TProgressbar", troughcolor='#202020', background=BASIC_COLOR)
+        self.success_bar = ttk.Progressbar(self.frame_data,
+                                            style="blue.Horizontal.TProgressbar",
+                                            orient='horizontal',
+                                            mode='determinate')
+        self.success_bar.place(relx=0.1, rely=0.8, height=20, width=100)
+
     def add_fixed_image(self):
         """Open an image file and show it in the GUI"""
         from PIL import ImageTk, Image
@@ -661,6 +671,7 @@ class Regim:
         """Do the registration for the fixed and moving image"""
         from PIL import Image, ImageTk
         try:
+            self.success_bar['maximum'] = 100
             self.progress_bar['maximum'] = 100
             self.run_progress_bar(1, random.randint(30, 60))
 
@@ -694,8 +705,12 @@ class Regim:
 
             self.label_info.configure(text=my_imreg.info_data)
 
+            metric = my_imreg.info_data.split(" Metric value:" + "\n")[1]
+            self.success_bar['value'] = (float(metric)*-1) * 100
+            self.success_bar.update()
+
             self.progress_bar['value'] = 0
-        except:
+        except():
             pass
 
     def run_progress_bar(self, start, stop):
