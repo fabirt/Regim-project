@@ -295,7 +295,8 @@ class Regim:
         # Brightness slider 1
         self.scale_br_fixed = Scale(self.frame_slider_1, from_=0, to=3, orient=HORIZONTAL, resolution=0.2)
         self.scale_br_fixed.place(relx=0.0, rely=-1.2, width=200)
-        self.scale_br_fixed.configure(background="#000")
+        self.scale_br_fixed.configure(background="#393939")
+        self.scale_br_fixed.configure(activebackground="#202020")
         self.scale_br_fixed.configure(borderwidth="0")
         self.scale_br_fixed.configure(command=self.edit_fixed)
         self.scale_br_fixed.set(1)
@@ -311,7 +312,8 @@ class Regim:
         # Brightness slider 2
         self.scale_br_moving = Scale(self.frame_slider_2, from_=0, to=3, orient=HORIZONTAL, resolution=0.2)
         self.scale_br_moving.place(relx=0.0, rely=-1.2, width=200)
-        self.scale_br_moving.configure(background="#000")
+        self.scale_br_moving.configure(background="#393939")
+        self.scale_br_moving.configure(activebackground="#202020")
         self.scale_br_moving.configure(borderwidth="0")
         self.scale_br_moving.configure(command=self.edit_moving)
         self.scale_br_moving.set(1)
@@ -710,7 +712,7 @@ class Regim:
             self.success_bar.update()
 
             self.progress_bar['value'] = 0
-        except():
+        except:
             pass
 
     def run_progress_bar(self, start, stop):
