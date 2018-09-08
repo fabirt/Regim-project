@@ -27,6 +27,7 @@ body, h1, h2, h3, h4, h5{
     font-size: 18px;
     margin-right: 16px;
     margin-top: 7px;
+    border-radius: 36px;
 }
 .btn:focus{
     border: none;
