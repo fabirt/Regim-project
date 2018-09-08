@@ -365,7 +365,7 @@ class Imreg:
             R.SetMovingInitialTransform(outTx)
             R.SetInitialTransform(displacementTx, inPlace=True)
 
-            R.SetMetricAsANTSNeighborhoodCorrelation(4)
+            R.SetMetricAsMattesMutualInformation(50)
 
             R.MetricUseFixedImageGradientFilterOff()
 
