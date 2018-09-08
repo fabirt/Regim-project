@@ -26,6 +26,7 @@ const restr = document.getElementById("restrict");
 const ite = document.getElementById("iter");
 const met = document.getElementById("met");
 const max = document.getElementById("max");
+const doc = document.getElementById("documentation");
 
 disp_a.addEventListener("click", ()=>{
   disp.style.display = "block";
@@ -33,6 +34,7 @@ disp_a.addEventListener("click", ()=>{
   ite.style.display = "none";
   met.style.display = "none";
   max.style.display = "none";
+  doc.style.display = "none";
 })
 
 restr_a.addEventListener("click", ()=>{
@@ -41,6 +43,7 @@ restr_a.addEventListener("click", ()=>{
   ite.style.display = "none";
   met.style.display = "none";
   max.style.display = "none";
+  doc.style.display = "none";
 })
 
 ite_a.addEventListener("click", ()=>{
@@ -49,6 +52,7 @@ ite_a.addEventListener("click", ()=>{
   ite.style.display = "block";
   met.style.display = "none";
   max.style.display = "none";
+  doc.style.display = "none";
 })
 
 met_a.addEventListener("click", ()=>{
@@ -57,6 +61,7 @@ met_a.addEventListener("click", ()=>{
   ite.style.display = "none";
   met.style.display = "block";
   max.style.display = "none";
+  doc.style.display = "none";
 })
 
 max_a.addEventListener("click", ()=>{
@@ -65,4 +70,5 @@ max_a.addEventListener("click", ()=>{
   ite.style.display = "none";
   met.style.display = "none";
   max.style.display = "block";
+  doc.style.display = "none";
 })
