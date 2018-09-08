@@ -187,7 +187,7 @@ class Imreg:
         except:
             pass
 
-    def image_registration_method3(self):
+    def image_registration_method3(self, max_iterations):
         try:
             fixed = Sitk.ReadImage(self.fixed_path, Sitk.sitkFloat32)
 
@@ -195,11 +195,11 @@ class Imreg:
 
             R = Sitk.ImageRegistrationMethod()
 
-            R.SetMetricAsCorrelation()
+            R.SetMetricAsMattesMutualInformation(50)
 
             R.SetOptimizerAsRegularStepGradientDescent(learningRate=2.0,
                                                        minStep=1e-4,
-                                                       numberOfIterations=500,
+                                                       numberOfIterations=max_iterations,
                                                        gradientMagnitudeTolerance=1e-8)
             R.SetOptimizerScalesFromIndexShift()
 
@@ -327,7 +327,7 @@ class Imreg:
         except:
             pass
 
-    def image_registration_method_displacement(self):
+    def image_registration_method_displacement(self, max_iterations):
         try:
             fixed = Sitk.ReadImage(self.fixed_path, Sitk.sitkFloat32)
 
@@ -345,7 +345,7 @@ class Imreg:
             R.MetricUseFixedImageGradientFilterOff()
 
             R.SetOptimizerAsGradientDescent(learningRate=1.0,
-                                            numberOfIterations=100,
+                                            numberOfIterations=max_iterations,
                                             estimateLearningRate=R.EachIteration)
             R.SetOptimizerScalesFromPhysicalShift()
 
@@ -374,7 +374,7 @@ class Imreg:
 
             R.SetOptimizerScalesFromPhysicalShift()
             R.SetOptimizerAsGradientDescent(learningRate=1,
-                                            numberOfIterations=300,
+                                            numberOfIterations=max_iterations,
                                             estimateLearningRate=R.EachIteration)
 
             outTx.AddTransform(R.Execute(fixed, moving))

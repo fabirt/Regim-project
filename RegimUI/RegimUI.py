@@ -16,6 +16,7 @@ from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter import messagebox
 import time
 import random
+import webbrowser
 
 try:
     from Tkinter import *
@@ -28,7 +29,6 @@ try:
 except ImportError:
     import tkinter.ttk as ttk
     py3 = True
-
 
 # -----------------------------------------------------------------------------
 # START METHODS
@@ -106,6 +106,7 @@ class Regim:
         self.png_dest_2 = MY_PNG_DEST_2
         self.im_fixed_path = None
         self.im_moving_path = None
+        self.radio_var = IntVar()
 
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
         _fgcolor = '#000000'  # X11 color: 'black'
@@ -162,20 +163,15 @@ class Regim:
 
         self.menubar.add_cascade(
             menu=self.help,
-            activebackground="#d9d9d9",
-            activeforeground="#000000",
-            background="#d9d9d9",
             font="TkMenuFont",
             foreground="#000000",
             label="Help"
         )
         self.help.add_command(
-            activebackground="#d8d8d8",
-            activeforeground="#000000",
-            background="#d9d9d9",
             font="TkMenuFont",
             foreground="#000000",
-            label="About"
+            label="About",
+            command=self.open_browser
         )
 
         # Frames configuration
@@ -510,44 +506,47 @@ class Regim:
         self.select_method_label.configure(font=font11)
         self.select_method_label.configure(text="Regim methods")
         self.select_method_label.configure(width=400)
-        # Select default method button
-        self.select_default_btn = Button(self.label_side)
-        self.select_default_btn.place(relx=0, rely=0.31, height=26, width=150)
-        self.select_default_btn.configure(background="#393939")
-        self.select_default_btn.configure(disabledforeground="#a3a3a3")
-        self.select_default_btn.configure(foreground="#ccc")
-        self.select_default_btn.configure(activebackground="#474747")
-        self.select_default_btn.configure(activeforeground="#cccccc")
-        self.select_default_btn.configure(font=font11)
-        self.select_default_btn.configure(text="Default")
-        self.select_default_btn.configure(width=400)
-        self.select_default_btn.configure(borderwidth="0")
-        self.select_default_btn.configure(command="")
-        # Select exhaustive method button
-        self.select_exhaustive_btn = Button(self.label_side)
-        self.select_exhaustive_btn.place(relx=0, rely=0.38, height=26, width=150)
-        self.select_exhaustive_btn.configure(background="#393939")
-        self.select_exhaustive_btn.configure(disabledforeground="#a3a3a3")
-        self.select_exhaustive_btn.configure(foreground="#ccc")
-        self.select_exhaustive_btn.configure(activebackground="#474747")
-        self.select_exhaustive_btn.configure(activeforeground="#cccccc")
-        self.select_exhaustive_btn.configure(font=font11)
-        self.select_exhaustive_btn.configure(text="Exhaustive")
-        self.select_exhaustive_btn.configure(width=400)
-        self.select_exhaustive_btn.configure(borderwidth="0")
-        self.select_exhaustive_btn.configure(command="")
+        # Select displacement method button
+        self.select_disp_btn = Radiobutton(self.label_side, variable=self.radio_var, value=1)
+        self.select_disp_btn.place(relx=0, rely=0.294, height=38, width=150)
+        self.select_disp_btn.configure(selectcolor='#515151', indicatoron=False)
+        self.select_disp_btn.configure(background="#393939")
+        self.select_disp_btn.configure(disabledforeground="#a3a3a3")
+        self.select_disp_btn.configure(foreground="#ccc")
+        self.select_disp_btn.configure(activebackground="#474747")
+        self.select_disp_btn.configure(activeforeground="#ccc")
+        self.select_disp_btn.configure(font=font11)
+        self.select_disp_btn.configure(text="Displacement")
+        self.select_disp_btn.configure(width=400)
+        self.select_disp_btn.configure(borderwidth="0")
+        self.select_disp_btn.configure(command=self.select_method)
+        self.select_disp_btn.select()
+        # Select restrictive method button
+        self.select_restrc_btn = Radiobutton(self.label_side, variable=self.radio_var, value=2)
+        self.select_restrc_btn.place(relx=0, rely=0.37, height=38, width=150)
+        self.select_restrc_btn.configure(selectcolor='#515151', indicatoron=False)
+        self.select_restrc_btn.configure(background="#393939")
+        self.select_restrc_btn.configure(disabledforeground="#a3a3a3")
+        self.select_restrc_btn.configure(foreground="#ccc")
+        self.select_restrc_btn.configure(activebackground="#474747")
+        self.select_restrc_btn.configure(activeforeground="#ccc")
+        self.select_restrc_btn.configure(font=font11)
+        self.select_restrc_btn.configure(text="Restrictive")
+        self.select_restrc_btn.configure(width=400)
+        self.select_restrc_btn.configure(borderwidth="0")
+        self.select_restrc_btn.configure(command=self.select_method)
         # Left parameters label
         self.select_parameters_label = Label(self.label_side)
-        self.select_parameters_label.place(relx=0, rely=0.46, height=30, width=150)
+        self.select_parameters_label.place(relx=0, rely=0.45, height=30, width=150)
         self.select_parameters_label.configure(background=BASIC_COLOR)
         self.select_parameters_label.configure(disabledforeground="#a3a3a3")
         self.select_parameters_label.configure(foreground="#fff")
         self.select_parameters_label.configure(font=font11)
         self.select_parameters_label.configure(text="Parameters")
         self.select_parameters_label.configure(width=400)
-        # Iterations input
-        self.iterations_input = Button(self.label_side)
-        self.iterations_input.place(relx=0, rely=0.54, height=26, width=150)
+        # Iterations label
+        self.iterations_input = Label(self.label_side)
+        self.iterations_input.place(relx=0, rely=0.53, height=26, width=150)
         self.iterations_input.configure(background="#393939")
         self.iterations_input.configure(disabledforeground="#a3a3a3")
         self.iterations_input.configure(foreground="#ccc")
@@ -557,20 +556,15 @@ class Regim:
         self.iterations_input.configure(text="Iterations")
         self.iterations_input.configure(width=400)
         self.iterations_input.configure(borderwidth="0")
-        self.iterations_input.configure(command="")
-        # Min step input
-        self.minstep_input = Button(self.label_side)
-        self.minstep_input.place(relx=0, rely=0.61, height=26, width=150)
-        self.minstep_input.configure(background="#393939")
-        self.minstep_input.configure(disabledforeground="#a3a3a3")
-        self.minstep_input.configure(foreground="#ccc")
-        self.minstep_input.configure(activebackground="#474747")
-        self.minstep_input.configure(activeforeground="#cccccc")
-        self.minstep_input.configure(font=font11)
-        self.minstep_input.configure(text="Min step")
-        self.minstep_input.configure(width=400)
-        self.minstep_input.configure(borderwidth="0")
-        self.minstep_input.configure(command="")
+        # Max iterations entry
+        self.iterations_entry = Entry(self.label_side)
+        self.iterations_entry.place(relx=0.28, rely=0.61, height=17, width=60)
+        self.iterations_entry.configure(background="#ccc")
+        self.iterations_entry.configure(disabledforeground="#a3a3a3")
+        self.iterations_entry.configure(foreground="#000")
+        self.iterations_entry.configure(font=font11)
+        self.iterations_entry.configure(borderwidth="0")
+        self.iterations_entry.insert(0, "200")
 
         # Progress bar
         s = ttk.Style()
@@ -673,12 +667,22 @@ class Regim:
         """Do the registration for the fixed and moving image"""
         from PIL import Image, ImageTk
         try:
+            method = self.radio_var.get()
+            max_iterations = int(self.iterations_entry.get())
+            if max_iterations <= 0:
+                int("abc")
+
             self.success_bar['maximum'] = 100
             self.progress_bar['maximum'] = 100
             self.run_progress_bar(1, random.randint(30, 60))
 
             my_imreg = Reg.Imreg(self.png_dest_1, self.png_dest_2)
-            registered_image = my_imreg.image_registration_method_displacement()
+
+            if method == 1:
+                registered_image = my_imreg.image_registration_method_displacement(max_iterations)
+            else:
+                registered_image = my_imreg.image_registration_method3(max_iterations)
+
             self.output_image = registered_image
 
             self.progress_bar['value'] = random.randint(70, 90)
@@ -712,8 +716,10 @@ class Regim:
             self.success_bar.update()
 
             self.progress_bar['value'] = 0
-        except:
-            pass
+        except ValueError:
+            title = "Value Error"
+            message = "Max iterations must be a positive integer!"
+            messagebox.showerror(title, message)
 
     def run_progress_bar(self, start, stop):
         """Run the progress bar"""
@@ -767,6 +773,13 @@ class Regim:
             edit_image = ImageTk.PhotoImage(p)
             self.label_moving.configure(image=edit_image)
             self.label_moving.image = edit_image
+
+    def select_method(self):
+        pass
+
+    def open_browser(self):
+        url = "https://fabirt.github.io/Regim-project/Regim-Web/"
+        webbrowser.open(url)
 
 
 if __name__ == '__main__':
