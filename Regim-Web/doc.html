@@ -47,32 +47,102 @@
         <div class="w3-container">
             <div id="documentation">
                 <h2 class="title">Documentation</h2>
-                <p class="description">Description here</p>
+                <p class="description">Regim documentation help provides 
+                    a series of indications and specifications in order to 
+                    help our users understanding all the software features.
+                </p>
             </div>
 
             <div class="item" id="disp">
                 <h2 class="title">Displacement registration method</h2>
-                <p class="description">Description here</p>
+                <p class="description">From the image registration methods provided 
+                    by <a href="http://www.simpleitk.org/SimpleITK/help/documentation.html" target="_blank">SimpleITK</a>, 
+                    Regim was responsible for adjusting them in the most 
+                    optimal way to obtain the best results.<br> A registration method use several components 
+                    which together defines a registration instance. Displacement registration method uses the 
+                    following components: </p>
+                <ul>
+                    <li>Transformation</li>
+                    <ul>
+                        <li>Affine Transform</li>
+                    </ul>
+                    <li>Similarity Metric</li>
+                    <ul>
+                        <li>Mutual Information</li>
+                    </ul>
+                    <li>Optimizer</li>
+                    <ul>
+                        <li>Gradient Descent</li>
+                    </ul>
+                    <li>Interpolator</li>
+                    <ul>
+                        <li>Linear</li>
+                    </ul>
+                </ul>
             </div>
 
             <div class="item" id="restrict">
                 <h2 class="title">Resctrictive registration method</h2>
-                <p class="description">Description here</p>
+                <p class="description">From the image registration methods provided 
+                    by <a href="http://www.simpleitk.org/SimpleITK/help/documentation.html" target="_blank">SimpleITK</a>, 
+                    Regim was responsible for adjusting them in the most 
+                    optimal way to obtain the best results.<br> A registration method use several components 
+                    which together defines a registration instance. Restrictive registration method uses the 
+                    following components: </p>
+                <ul>
+                    <li>Transformation</li>
+                    <ul>
+                        <li>Similarity 2D Transform</li>
+                    </ul>
+                    <li>Similarity Metric</li>
+                    <ul>
+                        <li>Mutual Information</li>
+                    </ul>
+                    <li>Optimizer</li>
+                    <ul>
+                        <li>Regular Step Gradient Descent</li>
+                    </ul>
+                    <li>Interpolator</li>
+                    <ul>
+                        <li>Linear</li>
+                    </ul>
+                </ul>
             </div>
 
             <div class="item" id="iter">
                 <h2 class="title">Iterations</h2>
-                <p class="description">Description here</p>
+                <p class="description">The iterations data field indicates the number of 
+                    iterations that the algorithm took to achieve a certain similarity value,
+                    hence, the more differences present the images, the more iterations the 
+                    algorithm will need to perform, therefore, 
+                    it will require more processing time.
+                </p>
             </div>
 
             <div class="item" id="met">
                 <h2 class="title">Metric value</h2>
-                <p class="description">Description here</p>
+                <p class="description">
+                    Metric value data field is very important when determining the degree of 
+                    success that the process had.<br>
+                    The measure used gives values, approximately, between 0 and -2, 
+                    where -2 is the best possible result. The bar shown in the software 
+                    represents the percentage of success.<br>
+                    Below are ranges that explain the perfomance according to the metric (t) :
+                </p>
+                <ul>
+                    <li>Low: &nbsp; t &nbsp; &#60; &nbsp; 40%</li>
+                    <li>Medium: &nbsp; 40% &nbsp; &#60; &nbsp; t &nbsp; &#60; &nbsp; 70%</li>
+                    <li>High: &nbsp; t &nbsp; &#62; &nbsp; 70%</li>
+                </ul>
             </div>
 
             <div class="item" id="max">
                 <h2 class="title">Maximum iterations</h2>
-                <p class="description">Description here</p>
+                <p class="description">The maximum iteration input specifies the maximum number 
+                    of iterations taken by the algorithm. This can limit the system's operation 
+                    if the specified value is too small.<br><br>
+                    Recommended value &nbsp; &#62; = &nbsp; 100
+                </p>
             </div>
         </div>
 

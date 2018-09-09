@@ -105,11 +105,21 @@ body{
     margin-top: 50px;
     font-size: 18px;
     color: rgba(255, 255, 255, 0.7);
+    text-align: justify;
 }
 
 .foot{
-    width: 100%;
+    width: 1100px;
     height: 170px;
+    position: fixed;
+}
+
+.item ul{
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: justify;
+}
+.item a{
     
 }
 
