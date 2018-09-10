@@ -112,11 +112,11 @@ body, h1, h2, h3, h4, h5{
         color: #2196f3;
         padding: 12px 30px;
         font-size: 16px;
-        margin-top: 23px;
+        margin-top: 27px;
         border-radius: 36px;
         width: 200px;
     }
-    .btn:hover {
+    .btn:active {
         background-color: #2857a9;
     }
   }
