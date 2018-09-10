@@ -107,7 +107,7 @@ body, h1, h2, h3, h4, h5{
         width: 90px;
         height: 40px;
     }
-    .btn {
+    .btn, .btn:hover {
         background-color: #ebf6ff;
         color: #2196f3;
         padding: 12px 30px;
