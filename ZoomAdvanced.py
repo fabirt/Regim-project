@@ -5,12 +5,12 @@
 
 import tkinter as tk
 from tkinter import ttk
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageEnhance
 
 
 class ZoomAdvanced(ttk.Frame):
     """ Advanced zoom of the image """
-    def __init__(self, mainframe, path):
+    def __init__(self, mainframe, pil_image):
         """ Initialize the main Frame """
         ttk.Frame.__init__(self, master=mainframe)
 
@@ -29,7 +29,7 @@ class ZoomAdvanced(ttk.Frame):
         self.canvas.bind('<MouseWheel>', self.wheel)  # with Windows and MacOS, but not Linux
         self.canvas.bind('<Button-5>',   self.wheel)  # only with Linux, wheel scroll down
         self.canvas.bind('<Button-4>',   self.wheel)  # only with Linux, wheel scroll up
-        self.image = Image.open(path)  # open image
+        self.image = pil_image  # open image
         self.width, self.height = self.image.size
         self.imscale = 1.0  # scale for the canvas image
         self.delta = 1.3  # zoom magnitude
@@ -114,7 +114,9 @@ class ZoomAdvanced(ttk.Frame):
             self.canvas.imagetk = imagetk  # keep an extra reference to prevent garbage-collection
 
 
-img_path = 'boy.png'  # place path to your image here
+img = Image.open('boy.png')  # place path to your image here
+enhancer = ImageEnhance.Brightness(img)
+img = enhancer.enhance(0.7)
 root = tk.Tk()
 root.geometry("700x550")
 frame_side = tk.Frame(root)
@@ -125,5 +127,5 @@ frame_side.configure(highlightbackground="#ffffff")
 frame_side.configure(highlightcolor="black")
 frame_side.configure(cursor="sizing")
 
-app = ZoomAdvanced(frame_side, path=img_path)
+app = ZoomAdvanced(frame_side, pil_image=img)
 root.mainloop()
