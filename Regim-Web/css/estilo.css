@@ -95,7 +95,7 @@ body, h1, h2, h3, h4, h5{
 /* Use a media query to add a breakpoint at *px: */
 @media screen and (max-width: 1000px) {
     .rg-container{
-        height: 940px;
+        height: 960px;
     }
     .rg-container .w3-col{
         margin-top: 0px;
@@ -111,9 +111,10 @@ body, h1, h2, h3, h4, h5{
         background-color: #ebf6ff;
         color: #2196f3;
         padding: 12px 30px;
-        font-size: 15px;
-        margin-top: 7px;
+        font-size: 16px;
+        margin-top: 23px;
         border-radius: 36px;
+        width: 200px;
     }
     .btn:hover {
         background-color: #2857a9;
