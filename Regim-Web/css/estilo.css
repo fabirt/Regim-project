@@ -92,6 +92,10 @@ body, h1, h2, h3, h4, h5{
     font-size: 24px;
 }
 
+.foot{
+    color: rgba(255, 255, 255, 0.7)
+}
+
 /* Use a media query to add a breakpoint at *px: */
 @media screen and (max-width: 1000px) {
     .rg-container{
