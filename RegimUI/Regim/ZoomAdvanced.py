@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# Advanced zoom example. Like in Google Maps.
-# It zooms only a tile, but not the whole image. So the zoomed tile occupies
-# constant memory and not crams it with a huge resized image for the large zooms.
+# Advanced zoom.
 
 import tkinter as tk
 from tkinter import ttk
@@ -113,19 +111,5 @@ class ZoomAdvanced(ttk.Frame):
             self.canvas.lower(imageid)  # set image into background
             self.canvas.imagetk = imagetk  # keep an extra reference to prevent garbage-collection
 
-
-img = Image.open('boy.png')  # place path to your image here
-enhancer = ImageEnhance.Brightness(img)
-img = enhancer.enhance(0.7)
-root = tk.Tk()
-root.geometry("700x550")
-frame_side = tk.Frame(root)
-frame_side.place(relx=0.32, rely=0.12, height=300, width=300)
-frame_side.configure(borderwidth="1")
-frame_side.configure(background="#202020")  # color #383838
-frame_side.configure(highlightbackground="#ffffff")
-frame_side.configure(highlightcolor="black")
-frame_side.configure(cursor="sizing")
-
-app = ZoomAdvanced(frame_side, pil_image=img)
-root.mainloop()
+    def set_image(self, image):
+        self.image = image

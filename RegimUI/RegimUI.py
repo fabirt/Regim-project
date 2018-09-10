@@ -10,8 +10,9 @@
 # -----------------------------------------------------------------------------
 # import sys
 import os
-import Imreg.Resources as Res
-import Imreg.RegistrationMethods as Reg
+import Regim.Resources as Res
+import Regim.RegistrationMethods as Reg
+import Regim.ZoomAdvanced as Zoom
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter import messagebox
 import time
@@ -69,7 +70,7 @@ def exit_btn():
 # -----------------------------------------------------------------------------
 # GLOBAL VARIABLES
 # -----------------------------------------------------------------------------
-"""When building .exe file, remember to change images/*. to *. """
+"""When building .exe file, remember to change images/*. to *. """  # pyinstaller.exe test.spec
 MY_ICON = 'images/icon.ico'
 MY_SAVE_BTN_PATH = 'images/save_btn.png'
 MY_DELETE_BTN_PATH = 'images/delete_btn.png'
@@ -95,9 +96,7 @@ class Regim:
         """This class configures and populates the toplevel window.
                 top is the toplevel containing window."""
 
-        from PIL import ImageTk, Image
-
-        # Loading required images and paths
+        # Loading required images and paths. Initializing variables
         self.icon_path = Res.resource_path(MY_ICON)
         self.save_btn_path = Res.resource_path(MY_SAVE_BTN_PATH)
         self.delete_btn_path = Res.resource_path(MY_DELETE_BTN_PATH)
@@ -106,6 +105,12 @@ class Regim:
         self.png_dest_2 = MY_PNG_DEST_2
         self.im_fixed_path = None
         self.im_moving_path = None
+        self.png_fixed_img = None
+        self.png_moving_img = None
+        self.output_image = None
+        self.fixed_object = None
+        self.moving_object = None
+        self.bw_image = None
         self.radio_var = IntVar()
 
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
@@ -119,15 +124,6 @@ class Regim:
             " -underline 0 -overstrike 0"
         font13 = "-family Verdana -size 13 -weight normal -slant roman "  \
             "-underline 0 -overstrike 0"
-
-        # Opening and resizing images
-        self.empty_image = Image.open(self.empty_image_path)
-        self.empty_image.thumbnail(IN_SIZE, Image.ANTIALIAS)
-        self.empty_image = ImageTk.PhotoImage(self.empty_image)
-
-        self.empty_image2 = Image.open(self.empty_image_path)
-        self.empty_image2.thumbnail(OUT_SIZE, Image.ANTIALIAS)
-        self.empty_image2 = ImageTk.PhotoImage(self.empty_image2)
 
         # Creating all the GUI
         top.geometry("1200x650+127+8")
@@ -314,33 +310,19 @@ class Regim:
         self.scale_br_moving.configure(command=self.edit_moving)
         self.scale_br_moving.set(1)
 
-        # Label fixed image
-        self.label_fixed = Label(self.frame_process)
-        self.label_fixed.place(relx=0.05, rely=0.08, height=200, width=200)
-        self.label_fixed.configure(background="#5d5f60")
-        self.label_fixed.configure(disabledforeground="#a3a3a3")
-        self.label_fixed.configure(font=font11)
-        self.label_fixed.configure(foreground="#000000")
-        self.label_fixed.configure(text='''Fixed image''')
-        self.label_fixed.configure(width=200)
-        self.label_fixed.configure(image=self.empty_image)
-        self.label_fixed.image = self.empty_image
+        # Frame fixed image
+        self.frame_fixed = Frame(self.frame_process)
+        self.frame_fixed.place(relx=0.05, rely=0.08, height=200, width=200)
+        self.frame_fixed.configure(borderwidth="1")
+        self.frame_fixed.configure(background=BASIC_COLOR)  # color #383838
+        self.frame_fixed.configure(cursor="sizing")
 
-        # Label moving image
-        self.label_moving = Label(self.frame_process)
-        self.label_moving.place(relx=0.05, rely=0.51, height=200, width=200)
-        self.label_moving.configure(activebackground="#f9f9f9")
-        self.label_moving.configure(activeforeground="black")
-        self.label_moving.configure(background="#5d5f60")
-        self.label_moving.configure(cursor="")
-        self.label_moving.configure(disabledforeground="#a3a3a3")
-        self.label_moving.configure(font=font11)
-        self.label_moving.configure(foreground="#000000")
-        self.label_moving.configure(highlightbackground="#d9d9d9")
-        self.label_moving.configure(highlightcolor="black")
-        self.label_moving.configure(text='''Moving image''')
-        self.label_moving.configure(image=self.empty_image)
-        self.label_moving.image = self.empty_image
+        # Frame moving image
+        self.frame_moving = Frame(self.frame_process)
+        self.frame_moving.place(relx=0.05, rely=0.51, height=200, width=200)
+        self.frame_moving.configure(borderwidth="1")
+        self.frame_moving.configure(background=BASIC_COLOR)  # color #383838
+        self.frame_moving.configure(cursor="sizing")
 
         # Label registered image
         self.label_reg = Label(self.frame_registered)
@@ -448,6 +430,7 @@ class Regim:
         self.save_button.configure(activebackground="#fff")
         self.save_button.configure(background="#d9d9d9")
         self.save_button.configure(borderwidth="0")
+        self.save_button.configure(cursor="hand2")
         self._save_img = PhotoImage(file=self.save_btn_path)
         self.save_button.configure(image=self._save_img)
         self.save_button.configure(command=self.save_file)
@@ -458,6 +441,7 @@ class Regim:
         self.delete_button.configure(activebackground="#fff")
         self.delete_button.configure(background="#d9d9d9")
         self.delete_button.configure(borderwidth="0")
+        self.delete_button.configure(cursor="hand2")
         self._del_img = PhotoImage(file=self.delete_btn_path)
         self.delete_button.configure(image=self._del_img)
         self.delete_button.configure(command=self.delete_files)
@@ -564,7 +548,7 @@ class Regim:
         self.iterations_entry.configure(foreground="#000")
         self.iterations_entry.configure(font=font11)
         self.iterations_entry.configure(borderwidth="0")
-        self.iterations_entry.insert(0, "200")
+        self.iterations_entry.insert(0, "100")
 
         # Progress bar
         s = ttk.Style()
@@ -591,7 +575,7 @@ class Regim:
 
     def add_fixed_image(self):
         """Open an image file and show it in the GUI"""
-        from PIL import ImageTk, Image
+        from PIL import Image
         self.png_dest_1 = MY_PNG_DEST_1
         # Searching file
         try:
@@ -614,12 +598,11 @@ class Regim:
                 self.png_dest_1 = self.im_fixed_path
                 self.label_dicom_data_1.configure(text="None")
 
-            # Place it in the GUI label
+            # Resize and place it in the Frame
             self.png_fixed_img = Image.open(self.png_dest_1)
             self.png_fixed_img.thumbnail(IN_SIZE, Image.ANTIALIAS)
-            png_image = ImageTk.PhotoImage(self.png_fixed_img)
-            self.label_fixed.configure(image=png_image)
-            self.label_fixed.image = png_image
+
+            self.fixed_object = Zoom.ZoomAdvanced(self.frame_fixed, self.png_fixed_img)
 
             self.im_fixed_path = self.png_dest_1
 
@@ -628,7 +611,7 @@ class Regim:
 
     def add_moving_image(self):
         """Open an image file and show it in the GUI"""
-        from PIL import ImageTk, Image
+        from PIL import Image
         self.png_dest_2 = MY_PNG_DEST_2
         try:
             # Searching file
@@ -651,12 +634,11 @@ class Regim:
                 self.png_dest_2 = self.im_moving_path
                 self.label_dicom_data_2.configure(text="None")
 
-            # Place it in the GUI label
+            # resize and place it in the Frame
             self.png_moving_img = Image.open(self.png_dest_2)
             self.png_moving_img.thumbnail(IN_SIZE, Image.ANTIALIAS)
-            png_image = ImageTk.PhotoImage(self.png_moving_img)
-            self.label_moving.configure(image=png_image)
-            self.label_moving.image = png_image
+
+            self.moving_object = Zoom.ZoomAdvanced(self.frame_moving, self.png_moving_img)
 
             self.im_moving_path = self.png_dest_2
 
@@ -671,6 +653,9 @@ class Regim:
             max_iterations = int(self.iterations_entry.get())
             if max_iterations <= 0:
                 int("abc")
+            elif self.fixed_object is None or self.moving_object is None:
+                messagebox.showinfo("Warning!", "Empty inputs")
+                return
 
             self.success_bar['maximum'] = 100
             self.progress_bar['maximum'] = 100
@@ -694,9 +679,9 @@ class Regim:
             registered_image.save(MY_OUT_DEST)
 
             copy = registered_image
-            bw = copy.convert("L")
+            self.bw_image = copy.convert("L")
 
-            bw = ImageTk.PhotoImage(bw)
+            bw_image = ImageTk.PhotoImage(self.bw_image)
             registered_image = ImageTk.PhotoImage(registered_image)
 
             self.progress_bar['value'] = 100
@@ -706,8 +691,8 @@ class Regim:
             self.label_reg.configure(image=registered_image)
             self.label_reg.image = registered_image
 
-            self.label_bw.configure(image=bw)
-            self.label_bw.image = bw
+            self.label_bw.configure(image=bw_image)
+            self.label_bw.image = bw_image
 
             self.label_info.configure(text=my_imreg.info_data)
 
@@ -732,15 +717,29 @@ class Regim:
         # self.progress_bar['value'] = 0
 
     def save_file(self):
-        """Save registered image"""
-        f = asksaveasfile(mode='w', defaultextension=".png")
-        if f is None:  # asksaveasfile return 'None' if dialog closed with "cancel".
-            return
-        saving_path = f.name
-        self.output_image.save(saving_path)
-        f.close()
+        file_types = [("PNG (*.PNG)", "*.png*")]
+        # define options for saving
+        options = {
+            'defaultextension': ".png",
+            'filetypes': file_types,
+            'initialfile': "OutputImage",
+            'title': "Save output image"
+        }
+        if self.output_image is not None:
+            """Save registered image"""
+            f = asksaveasfile(mode='w', **options)
+            if f is None:  # asksaveasfile return 'None' if dialog closed with "cancel".
+                return
+            saving_path = f.name
+            self.bw_image.save(saving_path)
+            f.close()
+        else:
+            title = "Impossible action"
+            message = "No output file to save"
+            messagebox.showwarning(title, message)
 
-    def delete_files(self):
+    @staticmethod
+    def delete_files():
         title = "Delete files"
         message = "Are you sure you want to permanently delete the images files?"
         answer = messagebox.askquestion(title, message, icon='warning')
@@ -756,29 +755,28 @@ class Regim:
 
     def edit_fixed(self, instance):
         """Edit fixed image brightness"""
-        from PIL import ImageTk, ImageEnhance
-        if self.im_fixed_path is not None:
-            edit = ImageEnhance.Brightness(self.png_fixed_img)
-            p = edit.enhance(self.scale_br_fixed.get())
-            edit_image = ImageTk.PhotoImage(p)
-            self.label_fixed.configure(image=edit_image)
-            self.label_fixed.image = edit_image
+        from PIL import ImageEnhance
+        if self.fixed_object is not None:
+            enhancer = ImageEnhance.Brightness(self.png_fixed_img)
+            edited_img = enhancer.enhance(self.scale_br_fixed.get())
+            self.fixed_object.set_image(edited_img)
+            self.fixed_object.show_image()
 
     def edit_moving(self, instance):
         """Edit moving image brightness"""
-        from PIL import ImageTk, ImageEnhance
-        if self.im_moving_path is not None:
-            edit = ImageEnhance.Brightness(self.png_moving_img)
-            p = edit.enhance(self.scale_br_moving.get())
-            edit_image = ImageTk.PhotoImage(p)
-            self.label_moving.configure(image=edit_image)
-            self.label_moving.image = edit_image
+        from PIL import ImageEnhance
+        if self.moving_object is not None:
+            enhancer = ImageEnhance.Brightness(self.png_moving_img)
+            edited_img = enhancer.enhance(self.scale_br_moving.get())
+            self.moving_object.set_image(edited_img)
+            self.moving_object.show_image()
 
     def select_method(self):
         pass
 
-    def open_browser(self):
-        url = "https://fabirt.github.io/Regim-project/Regim-Web/"
+    @staticmethod
+    def open_browser():
+        url = "https://fabirt.github.io/Regim-project/Regim-Web/doc.html"
         webbrowser.open(url)
 
 
