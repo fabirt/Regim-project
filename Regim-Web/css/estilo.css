@@ -80,6 +80,10 @@ body, h1, h2, h3, h4, h5{
 .rg-container .w3-row-padding{
     height: 100%;
 } 
+.rg-container a{
+    font-size: 18px;
+    color: rgba(2, 2, 2, 0.5);
+}
 #title{
     color: rgba(2, 2, 2, 0.7);
 }
@@ -91,7 +95,7 @@ body, h1, h2, h3, h4, h5{
 /* Use a media query to add a breakpoint at *px: */
 @media screen and (max-width: 1000px) {
     .rg-container{
-        height: 850px;
+        height: 940px;
     }
     .rg-container .w3-col{
         margin-top: 0px;
@@ -102,5 +106,16 @@ body, h1, h2, h3, h4, h5{
     #logo{
         width: 90px;
         height: 40px;
+    }
+    .btn {
+        background-color: #ebf6ff;
+        color: #2196f3;
+        padding: 12px 30px;
+        font-size: 15px;
+        margin-top: 7px;
+        border-radius: 36px;
+    }
+    .btn:hover {
+        background-color: #2857a9;
     }
   }
