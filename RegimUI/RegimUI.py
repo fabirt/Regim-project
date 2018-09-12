@@ -31,33 +31,27 @@ except ImportError:
     import tkinter.ttk as ttk
     py3 = True
 
+
 # -----------------------------------------------------------------------------
 # START METHODS
 # -----------------------------------------------------------------------------
 def vp_start_gui():
     """Starting point when module is the main routine."""
-    global val, w, root
+    global root
     root = Tk()
-    top = Regim(root)
+    Regim(root)
     root.mainloop()
 
 
-w = None
-
-
-def create_regim(root, *args, **kwargs):
+def create_regim(this_root, *args, **kwargs):
     """Starting point when module is imported by another program."""
-    global w, w_win, rt
-    rt = root
-    w = Toplevel(root)
+    w = Toplevel(this_root)
     top = Regim(w)
     return w, top
 
 
-def destroy_regim():
-    global w
+def destroy_regim(w):
     w.destroy()
-    w = None
 
 
 def exit_btn():
@@ -110,6 +104,7 @@ class Regim:
         self.output_image = None
         self.fixed_object = None
         self.moving_object = None
+        self.bw_object = None
         self.bw_image = None
         self.radio_var = IntVar()
 
@@ -143,11 +138,6 @@ class Regim:
             menu=self.file,
             font="TkMenuFont",
             label="File"
-        )
-        self.file.add_command(
-            font="TkMenuFont",
-            command="",
-            label="Load"
         )
         self.file.add_command(
             font="TkMenuFont",
@@ -198,6 +188,7 @@ class Regim:
         self.reg_button.configure(pady="0")
         self.reg_button.configure(relief=FLAT)
         self.reg_button.configure(text='Registration')
+        self.reg_button.configure(cursor="hand2")
         self.reg_button.configure(command=self.do_registration)
 
         # Side menu
@@ -285,7 +276,7 @@ class Regim:
         self.frame_slider_1.configure(highlightcolor="#ffffff")
 
         # Brightness slider 1
-        self.scale_br_fixed = Scale(self.frame_slider_1, from_=0, to=3, orient=HORIZONTAL, resolution=0.2)
+        self.scale_br_fixed = Scale(self.frame_slider_1, from_=0, to=3.6, orient=HORIZONTAL, resolution=0.2)
         self.scale_br_fixed.place(relx=0.0, rely=-1.2, width=200)
         self.scale_br_fixed.configure(background="#393939")
         self.scale_br_fixed.configure(activebackground="#202020")
@@ -302,7 +293,7 @@ class Regim:
         self.frame_slider_2.configure(highlightcolor="#ffffff")
 
         # Brightness slider 2
-        self.scale_br_moving = Scale(self.frame_slider_2, from_=0, to=3, orient=HORIZONTAL, resolution=0.2)
+        self.scale_br_moving = Scale(self.frame_slider_2, from_=0, to=3.6, orient=HORIZONTAL, resolution=0.2)
         self.scale_br_moving.place(relx=0.0, rely=-1.2, width=200)
         self.scale_br_moving.configure(background="#393939")
         self.scale_br_moving.configure(activebackground="#202020")
@@ -310,19 +301,43 @@ class Regim:
         self.scale_br_moving.configure(command=self.edit_moving)
         self.scale_br_moving.set(1)
 
+        # Frame slider 3
+        self.frame_slider_3 = Frame(self.frame_outputs)
+        self.frame_slider_3.place(relx=0.11, rely=0.826, height=17, width=200)
+        self.frame_slider_3.configure(borderwidth="0")
+        self.frame_slider_3.configure(background="#000")
+        self.frame_slider_3.configure(highlightbackground="#000000")
+        self.frame_slider_3.configure(highlightcolor="#ffffff")
+
+        # Brightness slider 3
+        self.scale_br_registered = Scale(self.frame_slider_3, from_=0, to=3.6, orient=HORIZONTAL, resolution=0.2)
+        self.scale_br_registered.place(relx=0.0, rely=-1.2, width=200)
+        self.scale_br_registered.configure(background="#393939")
+        self.scale_br_registered.configure(activebackground="#202020")
+        self.scale_br_registered.configure(borderwidth="0")
+        self.scale_br_registered.configure(command=self.edit_bw)
+        self.scale_br_registered.set(1)
+
         # Frame fixed image
         self.frame_fixed = Frame(self.frame_process)
         self.frame_fixed.place(relx=0.05, rely=0.08, height=200, width=200)
         self.frame_fixed.configure(borderwidth="1")
         self.frame_fixed.configure(background=BASIC_COLOR)  # color #383838
-        self.frame_fixed.configure(cursor="sizing")
+        self.frame_fixed.configure(cursor="fleur")
 
         # Frame moving image
         self.frame_moving = Frame(self.frame_process)
         self.frame_moving.place(relx=0.05, rely=0.51, height=200, width=200)
         self.frame_moving.configure(borderwidth="1")
         self.frame_moving.configure(background=BASIC_COLOR)  # color #383838
-        self.frame_moving.configure(cursor="sizing")
+        self.frame_moving.configure(cursor="fleur")
+
+        # Frame inner bw image
+        self.frame_bw_editable = Frame(self.frame_bw)
+        self.frame_bw_editable.place(relx=0.003, rely=0.003, height=200, width=200)
+        self.frame_bw_editable.configure(borderwidth="0")
+        self.frame_bw_editable.configure(background="#444749")  # color #383838
+        self.frame_bw_editable.configure(cursor="fleur")
 
         # Label registered image
         self.label_reg = Label(self.frame_registered)
@@ -337,14 +352,6 @@ class Regim:
         self.label_reg.configure(highlightbackground="#d9d9d9")
         self.label_reg.configure(highlightcolor="black")
         self.label_reg.configure(text='''Registered image''')
-
-        # Label B&W registered image
-        self.label_bw = Label(self.frame_bw)
-        self.label_bw.place(relx=0.003, rely=0.003, height=200, width=200)
-        self.label_bw.configure(activebackground="#f9f9f9")
-        self.label_bw.configure(activeforeground="black")
-        self.label_bw.configure(background="#444749")
-        self.label_bw.configure(cursor="")
 
         # Data label
         self.label_data = Label(self.frame_data)
@@ -450,23 +457,20 @@ class Regim:
         self.select_input_label = Label(self.label_side)
         self.select_input_label.place(relx=0, rely=0, height=30, width=150)
         self.select_input_label.configure(background=BASIC_COLOR)
-        self.select_input_label.configure(disabledforeground="#a3a3a3")
         self.select_input_label.configure(foreground="#fff")
         self.select_input_label.configure(font=font11)
         self.select_input_label.configure(text="Select inputs")
-        self.select_input_label.configure(width=400)
         # Select fixed image button
         self.select_fixed_btn = Button(self.label_side)
         self.select_fixed_btn.place(relx=0, rely=0.08, height=26, width=150)
         self.select_fixed_btn.configure(background="#393939")
         self.select_fixed_btn.configure(activebackground="#474747")
         self.select_fixed_btn.configure(activeforeground="#cccccc")
-        self.select_fixed_btn.configure(disabledforeground="#a3a3a3")
         self.select_fixed_btn.configure(foreground="#ccc")
         self.select_fixed_btn.configure(font=font11)
         self.select_fixed_btn.configure(text="Fixed image")
-        self.select_fixed_btn.configure(width=400)
         self.select_fixed_btn.configure(borderwidth="0")
+        self.select_fixed_btn.configure(cursor="hand2")
         self.select_fixed_btn.configure(command=self.add_fixed_image)
         # Select moving image button
         self.select_moving_btn = Button(self.label_side)
@@ -474,71 +478,60 @@ class Regim:
         self.select_moving_btn.configure(background="#393939")
         self.select_moving_btn.configure(activebackground="#474747")
         self.select_moving_btn.configure(activeforeground="#cccccc")
-        self.select_moving_btn.configure(disabledforeground="#a3a3a3")
         self.select_moving_btn.configure(foreground="#ccc")
         self.select_moving_btn.configure(font=font11)
         self.select_moving_btn.configure(text="Moving image")
-        self.select_moving_btn.configure(width=400)
         self.select_moving_btn.configure(borderwidth="0")
+        self.select_moving_btn.configure(cursor="hand2")
         self.select_moving_btn.configure(command=self.add_moving_image)
         # Left method label
         self.select_method_label = Label(self.label_side)
         self.select_method_label.place(relx=0, rely=0.23, height=30, width=150)
         self.select_method_label.configure(background=BASIC_COLOR)
-        self.select_method_label.configure(disabledforeground="#a3a3a3")
         self.select_method_label.configure(foreground="#fff")
         self.select_method_label.configure(font=font11)
         self.select_method_label.configure(text="Regim methods")
-        self.select_method_label.configure(width=400)
         # Select displacement method button
         self.select_disp_btn = Radiobutton(self.label_side, variable=self.radio_var, value=1)
         self.select_disp_btn.place(relx=0, rely=0.294, height=38, width=150)
         self.select_disp_btn.configure(selectcolor='#515151', indicatoron=False)
         self.select_disp_btn.configure(background="#393939")
-        self.select_disp_btn.configure(disabledforeground="#a3a3a3")
         self.select_disp_btn.configure(foreground="#ccc")
         self.select_disp_btn.configure(activebackground="#474747")
         self.select_disp_btn.configure(activeforeground="#ccc")
         self.select_disp_btn.configure(font=font11)
         self.select_disp_btn.configure(text="Displacement")
-        self.select_disp_btn.configure(width=400)
         self.select_disp_btn.configure(borderwidth="0")
-        self.select_disp_btn.configure(command=self.select_method)
+        self.select_disp_btn.configure(cursor="hand2")
         self.select_disp_btn.select()
         # Select restrictive method button
         self.select_restrc_btn = Radiobutton(self.label_side, variable=self.radio_var, value=2)
         self.select_restrc_btn.place(relx=0, rely=0.37, height=38, width=150)
         self.select_restrc_btn.configure(selectcolor='#515151', indicatoron=False)
         self.select_restrc_btn.configure(background="#393939")
-        self.select_restrc_btn.configure(disabledforeground="#a3a3a3")
         self.select_restrc_btn.configure(foreground="#ccc")
         self.select_restrc_btn.configure(activebackground="#474747")
         self.select_restrc_btn.configure(activeforeground="#ccc")
         self.select_restrc_btn.configure(font=font11)
         self.select_restrc_btn.configure(text="Restrictive")
-        self.select_restrc_btn.configure(width=400)
         self.select_restrc_btn.configure(borderwidth="0")
-        self.select_restrc_btn.configure(command=self.select_method)
+        self.select_restrc_btn.configure(cursor="hand2")
         # Left parameters label
         self.select_parameters_label = Label(self.label_side)
         self.select_parameters_label.place(relx=0, rely=0.45, height=30, width=150)
         self.select_parameters_label.configure(background=BASIC_COLOR)
-        self.select_parameters_label.configure(disabledforeground="#a3a3a3")
         self.select_parameters_label.configure(foreground="#fff")
         self.select_parameters_label.configure(font=font11)
         self.select_parameters_label.configure(text="Parameters")
-        self.select_parameters_label.configure(width=400)
         # Iterations label
         self.iterations_input = Label(self.label_side)
         self.iterations_input.place(relx=0, rely=0.53, height=26, width=150)
         self.iterations_input.configure(background="#393939")
-        self.iterations_input.configure(disabledforeground="#a3a3a3")
         self.iterations_input.configure(foreground="#ccc")
         self.iterations_input.configure(activebackground="#474747")
         self.iterations_input.configure(activeforeground="#cccccc")
         self.iterations_input.configure(font=font11)
         self.iterations_input.configure(text="Iterations")
-        self.iterations_input.configure(width=400)
         self.iterations_input.configure(borderwidth="0")
         # Max iterations entry
         self.iterations_entry = Entry(self.label_side)
@@ -606,6 +599,7 @@ class Regim:
 
             self.im_fixed_path = self.png_dest_1
 
+            self.scale_br_fixed.set(1)
         except:
             pass
 
@@ -641,6 +635,8 @@ class Regim:
             self.moving_object = Zoom.ZoomAdvanced(self.frame_moving, self.png_moving_img)
 
             self.im_moving_path = self.png_dest_2
+
+            self.scale_br_moving.set(1)
 
         except:
             pass
@@ -681,7 +677,6 @@ class Regim:
             copy = registered_image
             self.bw_image = copy.convert("L")
 
-            bw_image = ImageTk.PhotoImage(self.bw_image)
             registered_image = ImageTk.PhotoImage(registered_image)
 
             self.progress_bar['value'] = 100
@@ -691,8 +686,7 @@ class Regim:
             self.label_reg.configure(image=registered_image)
             self.label_reg.image = registered_image
 
-            self.label_bw.configure(image=bw_image)
-            self.label_bw.image = bw_image
+            self.bw_object = Zoom.ZoomAdvanced(self.frame_bw_editable, self.bw_image)
 
             self.label_info.configure(text=my_imreg.info_data)
 
@@ -700,7 +694,10 @@ class Regim:
             self.success_bar['value'] = (float(metric)*-1) * 100
             self.success_bar.update()
 
+            self.scale_br_registered.set(1)
+
             self.progress_bar['value'] = 0
+
         except ValueError:
             title = "Value Error"
             message = "Max iterations must be a positive integer!"
@@ -725,7 +722,7 @@ class Regim:
             'initialfile': "OutputImage",
             'title': "Save output image"
         }
-        if self.output_image is not None:
+        if self.bw_object is not None:
             """Save registered image"""
             f = asksaveasfile(mode='w', **options)
             if f is None:  # asksaveasfile return 'None' if dialog closed with "cancel".
@@ -737,21 +734,6 @@ class Regim:
             title = "Impossible action"
             message = "No output file to save"
             messagebox.showwarning(title, message)
-
-    @staticmethod
-    def delete_files():
-        title = "Delete files"
-        message = "Are you sure you want to permanently delete the images files?"
-        answer = messagebox.askquestion(title, message, icon='warning')
-        if answer == "yes":
-            if os.path.exists(MY_PNG_DEST_1):
-                os.remove(MY_PNG_DEST_1)
-            if os.path.exists(MY_PNG_DEST_2):
-                os.remove(MY_PNG_DEST_2)
-            if os.path.exists(MY_OUT_DEST):
-                os.remove(MY_OUT_DEST)
-        else:
-            pass
 
     def edit_fixed(self, instance):
         """Edit fixed image brightness"""
@@ -771,8 +753,43 @@ class Regim:
             self.moving_object.set_image(edited_img)
             self.moving_object.show_image()
 
-    def select_method(self):
-        pass
+    def edit_bw(self, instance):
+        """Edit registered B&W image brightness"""
+        from PIL import ImageEnhance
+        if self.bw_object is not None:
+            enhancer = ImageEnhance.Brightness(self.bw_image)
+            edited_img = enhancer.enhance(self.scale_br_registered.get())
+            self.bw_object.set_image(edited_img)
+            self.bw_object.show_image()
+
+    def delete_files(self):
+        title = "Delete files"
+        message = "Are you sure you want to permanently delete the images files?"
+        answer = messagebox.askquestion(title, message, icon='warning')
+        if answer == "yes":
+            if os.path.exists(MY_PNG_DEST_1):
+                os.remove(MY_PNG_DEST_1)
+                self.fixed_object = None
+                self.label_dicom_data_1.configure(text="")
+                for child in self.frame_fixed.winfo_children():
+                    child.destroy()
+            if os.path.exists(MY_PNG_DEST_2):
+                os.remove(MY_PNG_DEST_2)
+                self.moving_object = None
+                self.label_dicom_data_2.configure(text="")
+                for child in self.frame_moving.winfo_children():
+                    child.destroy()
+            if os.path.exists(MY_OUT_DEST):
+                os.remove(MY_OUT_DEST)
+                self.bw_object = None
+                self.label_reg.configure(image="")
+                self.label_info.configure(text="")
+                self.success_bar['value'] = 0
+                self.success_bar.update()
+                for child in self.frame_bw_editable.winfo_children():
+                    child.destroy()
+        else:
+            pass
 
     @staticmethod
     def open_browser():

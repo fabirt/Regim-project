@@ -3,7 +3,7 @@
 
 import tkinter as tk
 from tkinter import ttk
-from PIL import Image, ImageTk, ImageEnhance
+from PIL import ImageTk
 
 
 class ZoomAdvanced(ttk.Frame):
