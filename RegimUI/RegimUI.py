@@ -104,6 +104,7 @@ class Regim:
         self.output_image = None
         self.fixed_object = None
         self.moving_object = None
+        self.reg_object = None
         self.bw_object = None
         self.bw_image = None
         self.radio_var = IntVar()
@@ -276,12 +277,15 @@ class Regim:
         self.frame_slider_1.configure(highlightcolor="#ffffff")
 
         # Brightness slider 1
-        self.scale_br_fixed = Scale(self.frame_slider_1, from_=0, to=3.6, orient=HORIZONTAL, resolution=0.2)
+        self.scale_br_fixed = Scale(self.frame_slider_1, from_=0, to=4, orient=HORIZONTAL, resolution=0.2)
         self.scale_br_fixed.place(relx=0.0, rely=-1.2, width=200)
         self.scale_br_fixed.configure(background="#393939")
         self.scale_br_fixed.configure(activebackground="#202020")
         self.scale_br_fixed.configure(borderwidth="0")
-        self.scale_br_fixed.configure(command=self.edit_fixed)
+        self.scale_br_fixed.configure(command=lambda _: self.enhance_image(self.fixed_object,
+                                                                                    self.png_fixed_img,
+                                                                                    self.scale_br_fixed,
+                                                                                    None))
         self.scale_br_fixed.set(1)
 
         # Frame slider 2
@@ -293,12 +297,15 @@ class Regim:
         self.frame_slider_2.configure(highlightcolor="#ffffff")
 
         # Brightness slider 2
-        self.scale_br_moving = Scale(self.frame_slider_2, from_=0, to=3.6, orient=HORIZONTAL, resolution=0.2)
+        self.scale_br_moving = Scale(self.frame_slider_2, from_=0, to=4, orient=HORIZONTAL, resolution=0.2)
         self.scale_br_moving.place(relx=0.0, rely=-1.2, width=200)
         self.scale_br_moving.configure(background="#393939")
         self.scale_br_moving.configure(activebackground="#202020")
         self.scale_br_moving.configure(borderwidth="0")
-        self.scale_br_moving.configure(command=self.edit_moving)
+        self.scale_br_moving.configure(command=lambda _: self.enhance_image(self.moving_object,
+                                                                                    self.png_moving_img,
+                                                                                    self.scale_br_moving,
+                                                                                    None))
         self.scale_br_moving.set(1)
 
         # Frame slider 3
@@ -310,13 +317,48 @@ class Regim:
         self.frame_slider_3.configure(highlightcolor="#ffffff")
 
         # Brightness slider 3
-        self.scale_br_registered = Scale(self.frame_slider_3, from_=0, to=3.6, orient=HORIZONTAL, resolution=0.2)
-        self.scale_br_registered.place(relx=0.0, rely=-1.2, width=200)
+        self.scale_br_bw = Scale(self.frame_slider_3, from_=0, to=4, orient=HORIZONTAL, resolution=0.2)
+        self.scale_br_bw.place(relx=0.0, rely=-1.2, width=200)
+        self.scale_br_bw.configure(background="#393939")
+        self.scale_br_bw.configure(activebackground="#202020")
+        self.scale_br_bw.configure(borderwidth="0")
+        self.scale_br_bw.configure(command=lambda _: self.enhance_image(self.bw_object,
+                                                                                    self.bw_image,
+                                                                                    self.scale_br_bw,
+                                                                                    None))
+        self.scale_br_bw.set(1)
+
+        # Frame slider 4
+        self.frame_slider_4 = Frame(self.frame_outputs)
+        self.frame_slider_4.place(relx=0.11, rely=0.405, height=17, width=200)
+        self.frame_slider_4.configure(borderwidth="0")
+        self.frame_slider_4.configure(background="#000")
+        self.frame_slider_4.configure(highlightbackground="#000000")
+        self.frame_slider_4.configure(highlightcolor="#ffffff")
+
+        # Brightness slider 4
+        self.scale_br_registered = Scale(self.frame_slider_4, from_=0, to=4, orient=HORIZONTAL, resolution=0.2)
+        self.scale_br_registered.place(relx=0.0, rely=-1.2, width=100)
         self.scale_br_registered.configure(background="#393939")
         self.scale_br_registered.configure(activebackground="#202020")
         self.scale_br_registered.configure(borderwidth="0")
-        self.scale_br_registered.configure(command=self.edit_bw)
+        self.scale_br_registered.configure(command=lambda _: self.enhance_image(self.reg_object,
+                                                                                    self.output_image,
+                                                                                    self.scale_br_registered,
+                                                                                self.scale_sh_registered))
         self.scale_br_registered.set(1)
+
+        # Sharpness slider 4
+        self.scale_sh_registered = Scale(self.frame_slider_4, from_=0, to=5, orient=HORIZONTAL, resolution=0.2)
+        self.scale_sh_registered.place(relx=0.5, rely=-1.2, width=100)
+        self.scale_sh_registered.configure(background="#393939")
+        self.scale_sh_registered.configure(activebackground="#202020")
+        self.scale_sh_registered.configure(borderwidth="0")
+        self.scale_sh_registered.configure(command=lambda _: self.enhance_image(self.reg_object,
+                                                                                  self.output_image,
+                                                                                  self.scale_br_registered,
+                                                                                self.scale_sh_registered))
+        self.scale_sh_registered.set(1)
 
         # Frame fixed image
         self.frame_fixed = Frame(self.frame_process)
@@ -339,19 +381,12 @@ class Regim:
         self.frame_bw_editable.configure(background="#444749")  # color #383838
         self.frame_bw_editable.configure(cursor="fleur")
 
-        # Label registered image
-        self.label_reg = Label(self.frame_registered)
-        self.label_reg.place(relx=0.003, rely=0.003, height=200, width=200)
-        self.label_reg.configure(activebackground="#f9f9f9")
-        self.label_reg.configure(activeforeground="black")
-        self.label_reg.configure(background="#444749")
-        self.label_reg.configure(cursor="")
-        self.label_reg.configure(disabledforeground="#a3a3a3")
-        self.label_reg.configure(font=font11)
-        self.label_reg.configure(foreground="#ccc")
-        self.label_reg.configure(highlightbackground="#d9d9d9")
-        self.label_reg.configure(highlightcolor="black")
-        self.label_reg.configure(text='''Registered image''')
+        # Frame inner registered image
+        self.frame_registered_editable = Frame(self.frame_registered)
+        self.frame_registered_editable.place(relx=0.003, rely=0.003, height=200, width=200)
+        self.frame_registered_editable.configure(borderwidth="0")
+        self.frame_registered_editable.configure(background="#444749")  # color #383838
+        self.frame_registered_editable.configure(cursor="fleur")
 
         # Data label
         self.label_data = Label(self.frame_data)
@@ -643,7 +678,7 @@ class Regim:
 
     def do_registration(self):
         """Do the registration for the fixed and moving image"""
-        from PIL import Image, ImageTk
+        from PIL import Image
         try:
             method = self.radio_var.get()
             max_iterations = int(self.iterations_entry.get())
@@ -671,30 +706,35 @@ class Regim:
             time.sleep(0.1)
 
             # registered_image = Image.fromarray(self.registered_image)
-            registered_image.thumbnail(IN_SIZE, Image.ANTIALIAS)
-            registered_image.save(MY_OUT_DEST)
+            self.output_image.thumbnail(IN_SIZE, Image.ANTIALIAS)
+            self.output_image.save(MY_OUT_DEST)
 
             copy = registered_image
             self.bw_image = copy.convert("L")
-
-            registered_image = ImageTk.PhotoImage(registered_image)
 
             self.progress_bar['value'] = 100
             self.progress_bar.update()
             time.sleep(0.2)
 
-            self.label_reg.configure(image=registered_image)
-            self.label_reg.image = registered_image
-
             self.bw_object = Zoom.ZoomAdvanced(self.frame_bw_editable, self.bw_image)
-
-            self.label_info.configure(text=my_imreg.info_data)
+            self.reg_object = Zoom.ZoomAdvanced(self.frame_registered_editable, self.output_image)
 
             metric = my_imreg.info_data.split(" Metric value:" + "\n")[1]
-            self.success_bar['value'] = (float(metric)*-1) * 100
+            percentage = (float(metric)*100) / -1.8
+            if percentage >= 100:
+                percentage = 100
+                data_string = my_imreg.info_data + "\n\n(" + str(percentage)[0:3] + "%)"
+            else:
+                data_string = my_imreg.info_data + "\n\n(" + str(percentage)[0:2] + "%)"
+
+            self.label_info.configure(text=data_string)
+
+            self.success_bar['value'] = (float(metric)*100) / -1.5
             self.success_bar.update()
 
+            self.scale_br_bw.set(1)
             self.scale_br_registered.set(1)
+            self.scale_sh_registered.set(1)
 
             self.progress_bar['value'] = 0
 
@@ -735,33 +775,6 @@ class Regim:
             message = "No output file to save"
             messagebox.showwarning(title, message)
 
-    def edit_fixed(self, instance):
-        """Edit fixed image brightness"""
-        from PIL import ImageEnhance
-        if self.fixed_object is not None:
-            enhancer = ImageEnhance.Brightness(self.png_fixed_img)
-            edited_img = enhancer.enhance(self.scale_br_fixed.get())
-            self.fixed_object.set_image(edited_img)
-            self.fixed_object.show_image()
-
-    def edit_moving(self, instance):
-        """Edit moving image brightness"""
-        from PIL import ImageEnhance
-        if self.moving_object is not None:
-            enhancer = ImageEnhance.Brightness(self.png_moving_img)
-            edited_img = enhancer.enhance(self.scale_br_moving.get())
-            self.moving_object.set_image(edited_img)
-            self.moving_object.show_image()
-
-    def edit_bw(self, instance):
-        """Edit registered B&W image brightness"""
-        from PIL import ImageEnhance
-        if self.bw_object is not None:
-            enhancer = ImageEnhance.Brightness(self.bw_image)
-            edited_img = enhancer.enhance(self.scale_br_registered.get())
-            self.bw_object.set_image(edited_img)
-            self.bw_object.show_image()
-
     def delete_files(self):
         title = "Delete files"
         message = "Are you sure you want to permanently delete the images files?"
@@ -782,14 +795,37 @@ class Regim:
             if os.path.exists(MY_OUT_DEST):
                 os.remove(MY_OUT_DEST)
                 self.bw_object = None
-                self.label_reg.configure(image="")
+                self.reg_object = None
                 self.label_info.configure(text="")
                 self.success_bar['value'] = 0
                 self.success_bar.update()
                 for child in self.frame_bw_editable.winfo_children():
                     child.destroy()
+                for child in self.frame_registered_editable.winfo_children():
+                    child.destroy()
         else:
             pass
+
+    @staticmethod
+    def enhance_image(zoom_object, image, br_scale, sh_scale):
+        """Edit image brightness"""
+        from PIL import ImageEnhance
+        if zoom_object is not None:
+            brightness = br_scale.get()
+
+            if sh_scale is not None:
+                sharpness = sh_scale.get()
+            else:
+                sharpness = 1
+
+            enhancer = ImageEnhance.Brightness(image)
+            edited_img = enhancer.enhance(brightness)
+
+            enhancer = ImageEnhance.Sharpness(edited_img)
+            edited_img = enhancer.enhance(sharpness)
+
+            zoom_object.set_image(edited_img)
+            zoom_object.show_image()
 
     @staticmethod
     def open_browser():
