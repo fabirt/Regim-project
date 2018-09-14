@@ -1,10 +1,7 @@
 #  -*- coding: utf-8 -*-
-from tkinter import Frame
-from typing import Union
 
 import cv2
 import numpy
-from PIL import Image, ImageEnhance, ImageTk
 
 try:
     from Tkinter import *
@@ -24,6 +21,7 @@ except ImportError:
 class DVisual:
     def __init__(self, top=None):
         from PIL import Image, ImageEnhance, ImageTk
+
         _side_bg_color = '#535353'
         _main_bg_color = '#282828'
         _fg_color = '#000000'
@@ -69,9 +67,9 @@ class DVisual:
         Tk.update(top)
         self.tn_width = int(self.frame_images.winfo_width()) * 0.6
 
-        self.image_frame_list = [0, 1, 2, 3]
+        self.image_frame_list = [None, None, None, None]
         self.image_canvas_list = [None, None, None, None]
-        for i in self.image_frame_list:
+        for i in range(4):
             rel_x = 0.19
             rel_y = 0.04 + (0.24 * i)
             self.image_frame_list[i] = Frame(self.frame_images)
@@ -81,16 +79,17 @@ class DVisual:
             self.image_frame_list[i].configure(background=_main_bg_color)
             self.image_frame_list[i].configure(cursor="hand2")
 
-            path = Image.open("C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Input/K/input_1.png")
-            photo = ImageTk.PhotoImage(path)
             self.image_canvas_list[i] = Canvas(self.image_frame_list[i], highlightthickness=0)
             self.image_canvas_list[i].configure(borderwidth="0")
             self.image_canvas_list[i].configure(background="#fff")
             self.image_canvas_list[i].grid(row=0, column=0, sticky='nswe')
             self.image_canvas_list[i].bind("<Button-1>", self.select_image)
-            self.image_canvas_list[i].update()  # wait till canvas is created
-            self.image_canvas_list[i].create_image(0, 0, anchor=NW, image=photo)
+            path = Image.open(
+                "C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Input/K/input_1.png")
+            photo = ImageTk.PhotoImage(path, master=top)
+            self.image_canvas_list[i].create_image((0, 0), image=photo, anchor=NW)
             self.image_canvas_list[i].image = photo
+            self.image_canvas_list[i].update()  # wait till canvas is created
 
         # Main visualizer frame configuration
         Tk.update(top)
