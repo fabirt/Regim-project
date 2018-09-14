@@ -13,6 +13,7 @@ import os
 import Regim.Resources as Res
 import Regim.RegistrationMethods as Reg
 import Regim.ZoomAdvanced as Zoom
+import Regim.DVisual as DVisual
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter import messagebox
 import time
@@ -66,6 +67,7 @@ def exit_btn():
 # -----------------------------------------------------------------------------
 """When building .exe file, remember to change images/*. to *. """  # pyinstaller.exe test.spec
 MY_ICON = 'images/icon.ico'
+MY_SEE_BTN_PATH = 'images/see_btn.png'
 MY_SAVE_BTN_PATH = 'images/save_btn.png'
 MY_DELETE_BTN_PATH = 'images/delete_btn.png'
 MY_EMPTY_IMAGE_PATH = 'images/empty.jpg'
@@ -92,6 +94,7 @@ class Regim:
 
         # Loading required images and paths. Initializing variables
         self.icon_path = Res.resource_path(MY_ICON)
+        self.see_btn_path = Res.resource_path(MY_SEE_BTN_PATH)
         self.save_btn_path = Res.resource_path(MY_SAVE_BTN_PATH)
         self.delete_btn_path = Res.resource_path(MY_DELETE_BTN_PATH)
         self.empty_image_path = Res.resource_path(MY_EMPTY_IMAGE_PATH)
@@ -466,6 +469,17 @@ class Regim:
         self.frame_top.configure(highlightcolor="#ffffff")
         self.frame_top.configure(width=1005)
 
+        # SEE button
+        self.see_button = Button(self.frame_right)
+        self.see_button.place(relx=0.05, rely=0.05, height=30, width=30)
+        self.see_button.configure(activebackground="#1d1f21")
+        self.see_button.configure(background="#d9d9d9")
+        self.see_button.configure(borderwidth="0")
+        self.see_button.configure(cursor="hand2")
+        self._see_img = PhotoImage(file=self.see_btn_path)
+        self.see_button.configure(image=self._see_img)
+        self.see_button.configure(command=self.open_visualizer)
+
         # SAVE AS button
         self.save_button = Button(self.frame_right)
         self.save_button.place(relx=0.05, rely=0.73, height=30, width=30)
@@ -805,6 +819,12 @@ class Regim:
                     child.destroy()
         else:
             pass
+
+    @staticmethod
+    def open_visualizer():
+        visual = Tk()
+        DVisual.DVisual(visual)
+        visual.mainloop()
 
     @staticmethod
     def enhance_image(zoom_object, image, br_scale, sh_scale):
