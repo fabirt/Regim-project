@@ -820,11 +820,15 @@ class Regim:
         else:
             pass
 
-    @staticmethod
-    def open_visualizer():
-        visual = Tk()
-        DVisual.DVisual(visual)
-        visual.mainloop()
+    def open_visualizer(self):
+        if self.reg_object is not None:
+            visual = Tk()
+            DVisual.DVisual(visual, self.png_fixed_img, self.png_moving_img, self.output_image, self.bw_image)
+            visual.mainloop()
+        else:
+            title = "Incomplete task"
+            message = "No image files to visualize"
+            messagebox.showwarning(title, message)
 
     @staticmethod
     def enhance_image(zoom_object, image, br_scale, sh_scale):

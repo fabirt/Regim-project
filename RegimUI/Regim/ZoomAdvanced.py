@@ -15,6 +15,7 @@ class ZoomAdvanced(ttk.Frame):
         # Create canvas and put image on it
         self.canvas = tk.Canvas(self.master, highlightthickness=0)
         self.canvas.grid(row=0, column=0, sticky='nswe')
+        self.canvas.configure(background="#282828")
         self.canvas.update()  # wait till canvas is created
 
         # Make the canvas expandable
@@ -105,7 +106,7 @@ class ZoomAdvanced(ttk.Frame):
             x = min(int(x2 / self.imscale), self.width)   # sometimes it is larger on 1 pixel...
             y = min(int(y2 / self.imscale), self.height)  # ...and sometimes not
             image = self.image.crop((int(x1 / self.imscale), int(y1 / self.imscale), x, y))
-            imagetk = ImageTk.PhotoImage(image.resize((int(x2 - x1), int(y2 - y1))))
+            imagetk = ImageTk.PhotoImage(image.resize((int(x2 - x1), int(y2 - y1))), master=self.master)
             imageid = self.canvas.create_image(max(bbox2[0], bbox1[0]), max(bbox2[1], bbox1[1]),
                                                anchor='nw', image=imagetk)
             self.canvas.lower(imageid)  # set image into background
