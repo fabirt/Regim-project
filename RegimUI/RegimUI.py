@@ -341,27 +341,15 @@ class Regim:
 
         # Brightness slider 4
         self.scale_br_registered = Scale(self.frame_slider_4, from_=0, to=4, orient=HORIZONTAL, resolution=0.2)
-        self.scale_br_registered.place(relx=0.0, rely=-1.2, width=100)
+        self.scale_br_registered.place(relx=0.0, rely=-1.2, width=200)
         self.scale_br_registered.configure(background="#393939")
         self.scale_br_registered.configure(activebackground="#202020")
         self.scale_br_registered.configure(borderwidth="0")
         self.scale_br_registered.configure(command=lambda _: self.enhance_image(self.reg_object,
                                                                                     self.output_image,
                                                                                     self.scale_br_registered,
-                                                                                self.scale_sh_registered))
+                                                                                None))
         self.scale_br_registered.set(1)
-
-        # Sharpness slider 4
-        self.scale_sh_registered = Scale(self.frame_slider_4, from_=0, to=5, orient=HORIZONTAL, resolution=0.2)
-        self.scale_sh_registered.place(relx=0.5, rely=-1.2, width=100)
-        self.scale_sh_registered.configure(background="#393939")
-        self.scale_sh_registered.configure(activebackground="#202020")
-        self.scale_sh_registered.configure(borderwidth="0")
-        self.scale_sh_registered.configure(command=lambda _: self.enhance_image(self.reg_object,
-                                                                                  self.output_image,
-                                                                                  self.scale_br_registered,
-                                                                                self.scale_sh_registered))
-        self.scale_sh_registered.set(1)
 
         # Frame fixed image
         self.frame_fixed = Frame(self.frame_process)
@@ -748,7 +736,6 @@ class Regim:
 
             self.scale_br_bw.set(1)
             self.scale_br_registered.set(1)
-            self.scale_sh_registered.set(1)
 
             self.progress_bar['value'] = 0
 

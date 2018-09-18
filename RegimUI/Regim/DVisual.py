@@ -2,25 +2,18 @@
 
 import cv2
 import numpy
+import PIL
 from Regim import ZoomAdvanced
 try:
     from Tkinter import *
 except ImportError:
     from tkinter import *
 
-# path = "C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Input/K/input_1.png"
-# original_image = cv2.imread(path, 0)
-# original_height, original_width = original_image.shape[:2]
-# factor = 3
-# new_width = int(original_width * factor)
-# new_height = int(original_height * factor)
-# resized_image = cv2.resize(original_image, (new_width, new_height))
-# a = Image.fromarray(resized_image).show()
-
 
 class DVisual:
     def __init__(self, top=None, fixed_img=None, mov_img=None, reg_img=None, bw_img=None):
-        from PIL import Image, ImageEnhance, ImageTk
+        """Visualization GUI"""
+        from PIL import Image, ImageTk
 
         #  ---------------------------------- ASSETS ---------------------------------------------------
         _side_bg_color = '#535353'
@@ -32,6 +25,8 @@ class DVisual:
                  " -underline 0 -overstrike 0"
         _font13 = "-family Verdana -size 13 -weight normal -slant roman " \
                  "-underline 0 -overstrike 0"
+        self.main_image_object = None
+        self.big_image = None
         #  -------------------------------------------------------------------------------------------
 
         # Creating all the GUI
@@ -71,13 +66,13 @@ class DVisual:
         thumbnail_size = (self.tn_width, self.tn_width)
 
         fixed_img.thumbnail(thumbnail_size, Image.ANTIALIAS)
-        fixed_photo = ImageTk.PhotoImage(fixed_img, master=top)
+        fixed_photo = PIL.ImageTk.PhotoImage(fixed_img, master=top)
         mov_img.thumbnail(thumbnail_size, Image.ANTIALIAS)
-        mov_photo = ImageTk.PhotoImage(mov_img, master=top)
+        mov_photo = PIL.ImageTk.PhotoImage(mov_img, master=top)
         reg_img.thumbnail(thumbnail_size, Image.ANTIALIAS)
-        reg_photo = ImageTk.PhotoImage(reg_img, master=top)
+        reg_photo = PIL.ImageTk.PhotoImage(reg_img, master=top)
         bw_img.thumbnail(thumbnail_size, Image.ANTIALIAS)
-        bw_photo = ImageTk.PhotoImage(bw_img, master=top)
+        bw_photo = PIL.ImageTk.PhotoImage(bw_img, master=top)
         self.image_list = [fixed_img, mov_img, reg_img, bw_img]
         self.photo_list = [fixed_photo, mov_photo, reg_photo, bw_photo]
 
@@ -127,7 +122,6 @@ class DVisual:
         self.scale_br.configure(activebackground="#202020")
         self.scale_br.configure(foreground="#fff")
         self.scale_br.configure(borderwidth="0")
-        self.scale_br.configure(command="")
         self.scale_br.set(1)
         # Contrast slider
         self.scale_ct = Scale(self.frame_sliders, from_=0, to=4, orient=HORIZONTAL, resolution=0.2)
@@ -138,28 +132,61 @@ class DVisual:
         self.scale_ct.configure(borderwidth="0")
         self.scale_ct.configure(command="")
         self.scale_ct.set(1)
+        # Sliders Commands
+        self.scale_br.configure(command=lambda _: self.enhance_image(self.main_image_object,
+                                                                     self.big_image,
+                                                                     self.scale_br,
+                                                                     self.scale_ct))
+        self.scale_ct.configure(command=lambda _: self.enhance_image(self.main_image_object,
+                                                                     self.big_image,
+                                                                     self.scale_br,
+                                                                     self.scale_ct))
 
     def select_image(self, event):
+        """Select main canvas image"""
+        self.scale_ct.set(1)
+        self.scale_br.set(1)
         count = 0
         for item in self.image_canvas_list:
             if item == event.widget:
                 item.configure(borderwidth="1")
-                big_image = self.resize_image(self.image_list[count], self.visual_size)
-                main_image_object = ZoomAdvanced.ZoomAdvanced(self.frame_visual_inner, big_image)
+                self.big_image = self.resize_image(self.image_list[count], self.visual_size)
+                self.main_image_object = ZoomAdvanced.ZoomAdvanced(self.frame_visual_inner, self.big_image)
             else:
                 item.configure(borderwidth="0")
             count += 1
 
-    def resize_image(self, image, new_size=None):
-        from PIL import Image
+    @staticmethod
+    def resize_image(image, new_size=None):
+        """Resize and image using numpy, cv2"""
         original_image = numpy.array(image)
         original_height, original_width = original_image.shape[:2]
         factor = int(new_size/original_width)
         new_width = int(original_width * factor)
         new_height = int(original_height * factor)
         resized_image = cv2.resize(original_image, (new_width, new_height))
-        new_image = Image.fromarray(resized_image)
+        new_image = PIL.Image.fromarray(resized_image)
         return new_image
+
+    @staticmethod
+    def enhance_image(zoom_object, image, br_scale, cts_scale):
+        """Edit image brightness and contrast"""
+        from PIL import ImageEnhance
+        if zoom_object is not None:
+            brightness = br_scale.get()
+            contrast = cts_scale.get()
+            # if cts_scale is not None:
+            #     sharpness = cts_scale.get()
+            # else:
+            #     sharpness = 1
+            enhancer = ImageEnhance.Brightness(image)
+            edited_img = enhancer.enhance(brightness)
+
+            enhancer = ImageEnhance.Contrast(edited_img)
+            edited_img = enhancer.enhance(contrast)
+
+            zoom_object.set_image(edited_img)
+            zoom_object.show_image()
 
 
 if __name__ == '__main__':
