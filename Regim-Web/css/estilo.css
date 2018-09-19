@@ -99,6 +99,7 @@ body, h1, h2, h3, h4, h5{
 .rg-sidebar{
     margin-top: 60px;
     z-index: 2;
+    position: relative;
 }
 @keyframes animaterightt{from{left: 0;opacity:1} to{left: -60%;opacity:0}}
 
@@ -107,6 +108,7 @@ body, h1, h2, h3, h4, h5{
     margin: 0;
     border: none;
     text-decoration: none;
+    background-color: #fff;
 }
 
 .rg-nav:focus{
@@ -142,12 +144,30 @@ body, h1, h2, h3, h4, h5{
 }
 
 .rg-top{
+    background-color: #fff;
     z-index: 3;
 }
 
 #myOverlay{
     margin-top: 0px; /*60px; */
     z-index: 1;
+}
+
+.nocturne{
+    width: 100%;
+    padding-left: 35px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: left;
+    display: block;
+    text-decoration: none;
+    font-size: 15px;
+    background-color: inherit;
+    bottom: 60px;
+    position: absolute;
+}
+.noc{
+    transition: background-color 1000ms linear;
 }
 
 /* Use a media query to add a breakpoint at *px: */

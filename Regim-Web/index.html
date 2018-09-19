@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" href="images/regim_icoV2.ico" />
         <link rel="stylesheet" href="./css/w3.css">
+        
         <link rel="stylesheet" href="./css/font-awesome.min.css">
         <link rel="stylesheet" href="css/estilo.css">
         
@@ -13,10 +14,10 @@
     <body>
  
       <!-- Navbar (sit on top) -->
-        <nav class="w3-top rg-top">
-          <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+        <nav class="w3-top rg-top noc">
+          <div class="w3-bar w3-wide w3-padding w3-card">
             <img id="logo" class="w3-image w3-hide-medium w3-hide-small" src="images/regim_webV2.jpg" alt="Regim" width="150" height="50">
-            <button class="w3-white w3-xlarge w3-hide-large rg-nav" onclick="w3_bar_menu()">
+            <button class="w3-xlarge w3-hide-large rg-nav noc" onclick="w3_bar_menu()">
               <i class="fa fa-bars" id="menu-icon"></i>
             </button>
             <!-- Float links to the right. Hide them on small screens -->
@@ -33,7 +34,7 @@
         </nav>
       
         <!-- Sidebar -->
-        <div class="w3-sidebar w3-animate-left w3-bar-block w3-border-right rg-sidebar" style="display:none" id="mySidebar">
+        <div class="w3-sidebar w3-animate-left w3-bar-block w3-border-right rg-sidebar noc" style="display:none" id="mySidebar">
           <img class="w3-image rg-bar-img" src="images/regim_menu.jpg" alt="Regim" width="400" >
           <a href="download/Regim-2.7.zip" class="rg-bar-item">
             <i class="fa fa-arrow-circle-down"></i>
@@ -42,6 +43,9 @@
           <a href="https://github.com/fabirt/Regim-project" target="_blank" class="rg-bar-item">
             <i class="fa fa-github"></i>
             <span>Github</span>
+          </a>
+          <a class="nocturne w3-border-top">
+              <i class="fa fa-moon-o fa-2x" onclick="nocMode()"></i>
           </a>
         </div>
 
@@ -78,15 +82,15 @@
         </header>
 
         <!-- Page content -->
-        <div class="w3-content w3-padding" style="max-width:1564px">
+        <div class="w3-content w3-padding noc" style="max-width:1564px">
            
-            <div class="w3-padding-64 w3-white">
+            <div class="w3-padding-64 ">
               <div class="w3-row-padding">
                 <div class="w3-col l8 m12">
                   <h1 class="w3-jumbo"><b>Regim</b></h1>
                   <h1 class="w3-xxxlarge w3-text-blue"><b>Why use it?</b></h1>
                     <br>
-                  <p style="text-align:justify" class="info">
+                  <p style="text-align:justify" class="info noc">
                     In medicine, many diagnoses are based on medical images. 
                     However, for the same patient, many images are taken at different moments of time, 
                     different positions and also from different devices. 
@@ -97,7 +101,7 @@
                     therefore, both images can be easily compared or integrated.
                   </p>
                   <br>
-                  <p class="info">Available on Windows &nbsp;&nbsp; <i class="fa fa-windows w3-xlarge w3-text-blue"></i></p>
+                  <p class="info noc">Available on Windows &nbsp;&nbsp; <i class="fa fa-windows w3-xlarge w3-text-blue"></i></p>
                 </div>
                 <div class="w3-col l4">
                   <img src="images/med_imageV2.jpg" class="w3-image w3-right w3-hide-small w3-hide-medium" 

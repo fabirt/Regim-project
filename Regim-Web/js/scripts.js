@@ -12,13 +12,26 @@ function w3_bar_menu() {
     }else{
         document.getElementById("mySidebar").style.animation = "animaterightt 0.4s"
         document.getElementById("mySidebar").style.display = "block";
-        setTimeout(function(){
+        setTimeout(()=>{
             document.getElementById("mySidebar").style.display = "none";
         },300)
         document.getElementById("myOverlay").style.display = "none";
         document.getElementById("menu-icon").className = bars;
         
     }
-    
-    
+}
+
+let pressed = false;
+function nocMode(){
+    const nocElements = document.getElementsByClassName("noc");
+    for(let i = 0; i< nocElements.length; i++){
+        if(pressed == false){
+            nocElements[i].style.backgroundColor = "#32393f";
+            nocElements[i].style.color = "white";
+        }else{
+            nocElements[i].style.backgroundColor = "#fff";
+            nocElements[i].style.color = "black";
+        } 
+    }
+    pressed = !pressed;
 }
