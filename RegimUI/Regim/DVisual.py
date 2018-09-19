@@ -1,8 +1,5 @@
 #  -*- coding: utf-8 -*-
 
-import cv2
-import numpy
-import PIL
 from Regim import ZoomAdvanced
 try:
     from Tkinter import *
@@ -66,13 +63,13 @@ class DVisual:
         thumbnail_size = (self.tn_width, self.tn_width)
 
         fixed_img.thumbnail(thumbnail_size, Image.ANTIALIAS)
-        fixed_photo = PIL.ImageTk.PhotoImage(fixed_img, master=top)
+        fixed_photo = ImageTk.PhotoImage(fixed_img, master=top)
         mov_img.thumbnail(thumbnail_size, Image.ANTIALIAS)
-        mov_photo = PIL.ImageTk.PhotoImage(mov_img, master=top)
+        mov_photo = ImageTk.PhotoImage(mov_img, master=top)
         reg_img.thumbnail(thumbnail_size, Image.ANTIALIAS)
-        reg_photo = PIL.ImageTk.PhotoImage(reg_img, master=top)
+        reg_photo = ImageTk.PhotoImage(reg_img, master=top)
         bw_img.thumbnail(thumbnail_size, Image.ANTIALIAS)
-        bw_photo = PIL.ImageTk.PhotoImage(bw_img, master=top)
+        bw_photo = ImageTk.PhotoImage(bw_img, master=top)
         self.image_list = [fixed_img, mov_img, reg_img, bw_img]
         self.photo_list = [fixed_photo, mov_photo, reg_photo, bw_photo]
 
@@ -158,15 +155,17 @@ class DVisual:
 
     @staticmethod
     def resize_image(image, new_size=None):
-        """Resize and image using numpy, cv2"""
-        original_image = numpy.array(image)
-        original_height, original_width = original_image.shape[:2]
+        """Resize an image using PIL"""
+        from PIL import Image
+        # original_image = numpy.array(image)
+        original_height, original_width = image.size
         factor = int(new_size/original_width)
         new_width = int(original_width * factor)
         new_height = int(original_height * factor)
-        resized_image = cv2.resize(original_image, (new_width, new_height))
-        new_image = PIL.Image.fromarray(resized_image)
-        return new_image
+        # resized_image = cv2.resize(original_image, (new_width, new_height))
+        # new_image = PIL.Image.fromarray(resized_image)
+        resized_img = image.resize((new_width, new_height), Image.ANTIALIAS)
+        return resized_img
 
     @staticmethod
     def enhance_image(zoom_object, image, br_scale, cts_scale):
