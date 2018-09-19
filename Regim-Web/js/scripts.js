@@ -16,9 +16,9 @@ function w3_bar_menu() {
         document.getElementById("mySidebar").style.display = "block";
         setTimeout(function(){
             document.getElementById("mySidebar").style.display = "none";
-            document.getElementById("myOverlay").style.display = "none";
-            document.getElementById("menu-icon").className = bars;
         },300)
+        document.getElementById("myOverlay").style.display = "none";
+        document.getElementById("menu-icon").className = bars;
         
     }
     
