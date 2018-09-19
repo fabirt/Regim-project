@@ -4,7 +4,7 @@ function w3_bar_menu() {
     const menuIcon = document.getElementById("menu-icon");
     const iconClassName = menuIcon.className;
     if (iconClassName==bars){
-        document.getElementById("mySidebar").style.width = "400px";
+        document.getElementById("mySidebar").style.width = "60%";
         document.getElementById("mySidebar").style.display = "block";
         document.getElementById("myOverlay").style.display = "block";
         document.getElementById("menu-icon").className = times;
