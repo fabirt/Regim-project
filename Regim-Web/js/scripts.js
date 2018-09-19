@@ -9,8 +9,6 @@ function w3_bar_menu() {
         document.getElementById("mySidebar").style.display = "block";
         document.getElementById("myOverlay").style.display = "block";
         document.getElementById("menu-icon").className = times;
-
-        document.getElementById("jaja").style.width = "60%";
     }else{
         document.getElementById("mySidebar").style.animation = "animaterightt 0.4s"
         document.getElementById("mySidebar").style.display = "block";
