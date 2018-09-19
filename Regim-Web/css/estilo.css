@@ -96,10 +96,59 @@ body, h1, h2, h3, h4, h5{
     color: rgba(255, 255, 255, 0.82)
 }
 
+.rg-sidebar{
+    margin-top: 60px;
+    z-index: 40;
+}
+
+.rg-nav{
+    padding: 5px;
+    margin: 0;
+    border: none;
+    text-decoration: none;
+}
+
+.rg-nav:focus{
+    outline:0;
+    border: none;
+    color: inherit;
+    text-decoration: none;
+}
+
+.rg-bar-item{
+    padding-left: 35px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: left;
+    display: block;
+    text-decoration: none;
+    font-size: 22px;
+    background-color: inherit;
+}
+.rg-bar-img{
+    /* margin-left: 20px;
+    margin-top: 20px; */
+    margin-bottom: 10px;
+}
+.rg-bar-item:active{
+    text-decoration: none;
+    color: #2196f3;
+    background-color: #c2c2c2da;
+}
+
+.rg-bar-item span{
+    margin-left: 30px;
+}
+
+#myOverlay{
+    margin-top: 60px;
+}
+
 /* Use a media query to add a breakpoint at *px: */
 @media screen and (max-width: 1000px) {
+
     .rg-container{
-        height: 960px;
+        height: 910px;
     }
     .rg-container .w3-col{
         margin-top: 0px;

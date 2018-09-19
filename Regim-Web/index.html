@@ -11,11 +11,14 @@
         
     </head>
     <body>
-
-    <!-- Navbar (sit on top) -->
-        <div class="w3-top">
+ 
+      <!-- Navbar (sit on top) -->
+        <nav class="w3-top">
           <div class="w3-bar w3-white w3-wide w3-padding w3-card">
-            <img id="logo" class="w3-image" src="images/regim_webV2.jpg" alt="Regim" width="150" height="50">
+            <img id="logo" class="w3-image w3-hide-medium w3-hide-small" src="images/regim_webV2.jpg" alt="Regim" width="150" height="50">
+            <button class="w3-white w3-xlarge w3-hide-large rg-nav" onclick="w3_bar_menu()">
+              <i class="fa fa-bars" id="menu-icon"></i>
+            </button>
             <!-- Float links to the right. Hide them on small screens -->
             <div class="w3-right w3-hide-medium w3-hide-small">
               
@@ -27,7 +30,23 @@
                 
             </div>
           </div>
+        </nav>
+      
+        <!-- Sidebar -->
+        <div class="w3-sidebar w3-animate-left w3-bar-block w3-border-right rg-sidebar" style="display:none" id="mySidebar">
+          <img class="w3-image rg-bar-img" src="images/regim_menu.jpg" alt="Regim" width="400" >
+          <a href="download/Regim-2.7.zip" class="rg-bar-item">
+            <i class="fa fa-arrow-circle-down"></i>
+            <span>Download</span>
+          </a>
+          <a href="https://github.com/fabirt/Regim-project" target="_blank" class="rg-bar-item">
+            <i class="fa fa-github"></i>
+            <span>Github</span>
+          </a>
         </div>
+
+        <!-- Overlay -->
+        <div class="w3-overlay" id="myOverlay" onclick="w3_bar_menu()"></div>
 
         <!-- Header -->
         <header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
@@ -45,13 +64,13 @@
               <div class="w3-col l6 m12 s12">
                 <img src="images/software2.jpg" class="w3-image w3-right" 
                 width="750" height="500" id="software">
-                <center class="w3-hide-large">
+                <!-- <center class="w3-hide-large">
                   <a href="download/Regim-2.7.0.exe" download >
                     <button class="btn">
                         <i class="fa fa-download"></i> Download
                     </button>
                   </a>
-                </center>
+                </center> -->
               </div>
             </div>
           </div>
@@ -97,6 +116,8 @@
             <p class="foot">Copyright © 2018 Regim S.A. Developed with Python and SimpleITK. </p>
         </footer>
 
+        <!-- Scripts -->
+        <script src="./js/scripts.js"></script>
 
     </body>
     </html>
