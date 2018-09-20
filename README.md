@@ -15,7 +15,7 @@ You can download the software with the following ways:
 - Download it from our repository releases
 - Or cloning this repository and install the source code using the setup file
 ```
-path/to/project python setup.py
+$path/to/project python setup.py install
 ```
 
 ___
