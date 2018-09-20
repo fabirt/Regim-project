@@ -1,7 +1,7 @@
 # Regim - project
 ## Image registration software
 
-Regim is desktop app developed with python in order to ease image registration processes.
+Regim is a desktop app developed with python in order to ease medical image registration processes.
 
 Our team was in charge of optimizing the image registration methods provided by [SimpleITK](http://www.simpleitk.org/), as well as validating and checking the correct result.
 
