@@ -1,6 +1,7 @@
 #  -*- coding: utf-8 -*-
 
 from Regim import ZoomAdvanced
+from Regim import Resources
 try:
     from Tkinter import *
 except ImportError:
@@ -8,7 +9,7 @@ except ImportError:
 
 
 class DVisual:
-    def __init__(self, top=None, fixed_img=None, mov_img=None, reg_img=None, bw_img=None):
+    def __init__(self, top=None, fixed_img=None, mov_img=None, reg_img=None, bw_img=None, png_path_list=None):
         """Visualization GUI"""
         from PIL import Image, ImageTk
 
@@ -24,6 +25,7 @@ class DVisual:
                  "-underline 0 -overstrike 0"
         self.main_image_object = None
         self.big_image = None
+        self.png_path_list = png_path_list
         #  -------------------------------------------------------------------------------------------
 
         # Creating all the GUI
@@ -147,25 +149,29 @@ class DVisual:
         for item in self.image_canvas_list:
             if item == event.widget:
                 item.configure(borderwidth="1")
-                self.big_image = self.resize_image(self.image_list[count], self.visual_size)
+                self.big_image = self.resize_image(self.image_list[count], self.png_path_list[count], self.visual_size, count)
                 self.main_image_object = ZoomAdvanced.ZoomAdvanced(self.frame_visual_inner, self.big_image)
             else:
                 item.configure(borderwidth="0")
             count += 1
 
     @staticmethod
-    def resize_image(image, new_size=None):
+    def resize_image(image, path, new_size=None, count=0):
         """Resize an image using PIL"""
         from PIL import Image
-        # original_image = numpy.array(image)
-        original_height, original_width = image.size
-        factor = int(new_size/original_width)
-        new_width = int(original_width * factor)
-        new_height = int(original_height * factor)
-        # resized_image = cv2.resize(original_image, (new_width, new_height))
+        if count == 3:
+            mode = 0
+        else:
+            mode = 1
+        # original_height, original_width = image.size
+        # factor = int(new_size/original_width)
+        # new_width = int(original_width * factor)
+        # new_height = int(original_height * factor)
+        resized_image_arr = Resources.opencv_resize(path, new_size, new_size, mode=mode)
+        resized_image = Image.fromarray(resized_image_arr)
         # new_image = PIL.Image.fromarray(resized_image)
-        resized_img = image.resize((new_width, new_height), Image.ANTIALIAS)
-        return resized_img
+        # resized_imgage = image.resize((new_width, new_height), Image.ANTIALIAS)
+        return resized_image
 
     @staticmethod
     def enhance_image(zoom_object, image, br_scale, cts_scale):
@@ -190,14 +196,14 @@ class DVisual:
 
 if __name__ == '__main__':
     from PIL import Image
-    fixed_path = Image.open(
-        "C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Input/K/input_1.png")
-    mov_path = Image.open(
-        "C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Input/K/input_2.png")
-    reg_path = Image.open(
-        "C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Output/Mutual_info/Displacement/K/output.png")
-    bw_path = Image.open(
-        "C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Output/Mutual_info/Displacement/K/output.png")
+    png_path_list = ["C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Input/K/input_1.png",
+                     "C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Input/K/input_2.png",
+                     "C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Output/Mutual_info/Displacement/K/output.png",
+                     "C:/Users/Fabian/Desktop/Fabi_py_Projects/projects/Data_analysis/Data/Output/Mutual_info/Displacement/K/output.png"]
+    fixed_path = Image.open(png_path_list[0])
+    mov_path = Image.open(png_path_list[1])
+    reg_path = Image.open(png_path_list[2])
+    bw_path = Image.open(png_path_list[3])
     root = Tk()
-    v = DVisual(root, fixed_path, mov_path, reg_path, bw_path)
+    v = DVisual(root, fixed_path, mov_path, reg_path, bw_path, png_path_list)
     root.mainloop()

@@ -15,6 +15,7 @@ import sys
 import numpy as np
 import png
 import pydicom
+import cv2
 
 
 def resource_path(relative_path):
@@ -25,6 +26,39 @@ def resource_path(relative_path):
         return os.path.join(os.path.abspath("."), relative_path)
     except:
         pass
+
+
+def opencv_resize(image_path, width=None, height=None, inter=cv2.INTER_AREA, mode=0):
+    # initialize the dimensions of the cv2_image to be resized and
+    # grab the cv2_image size
+    dim = None
+    cv2_image = cv2.imread(image_path, mode)
+    (h, w) = cv2_image.shape[:2]
+
+    # if both the width and height are None, then return the
+    # original cv2_image
+    if width is None and height is None:
+        return cv2_image
+
+    # check to see if the width is None
+    if width is None:
+        # calculate the ratio of the height and construct the
+        # dimensions
+        r = height / float(h)
+        dim = (int(w * r), height)
+
+    # otherwise, the height is None
+    else:
+        # calculate the ratio of the width and construct the
+        # dimensions
+        r = width / float(w)
+        dim = (width, int(h * r))
+
+    # resize the cv2_image
+    resized = cv2.resize(cv2_image, dim, interpolation=inter)
+
+    # return the resized cv2_image
+    return resized
 
 
 class Convert:

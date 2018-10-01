@@ -66,11 +66,18 @@ def exit_btn():
 # GLOBAL VARIABLES
 # -----------------------------------------------------------------------------
 """When building .exe file, remember to change images/*. to *. """  # pyinstaller.exe test.spec
-MY_ICON = 'images/icon.ico'
-MY_SEE_BTN_PATH = 'images/see_btn.png'
-MY_SAVE_BTN_PATH = 'images/save_btn.png'
-MY_DELETE_BTN_PATH = 'images/delete_btn.png'
-MY_EMPTY_IMAGE_PATH = 'images/empty.jpg'
+"""For distribution set dist to True"""
+dist = False
+if dist is True:
+    folder = '.'
+else:
+    folder = 'images'
+
+MY_ICON = '{0}/icon.ico'.format(folder)
+MY_SEE_BTN_PATH = '{0}/see_btn.png'.format(folder)
+MY_SAVE_BTN_PATH = '{0}/save_btn.png'.format(folder)
+MY_DELETE_BTN_PATH = '{0}/delete_btn.png'.format(folder)
+MY_EMPTY_IMAGE_PATH = '{0}/empty.jpg'.format(folder)
 MY_PNG_DEST_1 = 'input_1.png'
 MY_PNG_DEST_2 = 'input_2.png'
 MY_OUT_DEST = 'output.png'
@@ -111,6 +118,7 @@ class Regim:
         self.bw_object = None
         self.bw_image = None
         self.radio_var = IntVar()
+        self.png_path_list = [self.png_dest_1, self.png_dest_2, MY_OUT_DEST, MY_OUT_DEST]
 
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
         _fgcolor = '#000000'  # X11 color: 'black'
@@ -624,8 +632,10 @@ class Regim:
                 convert.dicom_to_png(self.im_fixed_path, self.png_dest_1)
                 dicom_info = convert.dicom_file_info
                 self.label_dicom_data_1.configure(text=dicom_info)
+                self.png_path_list[0] = self.png_dest_1
             else:
                 self.png_dest_1 = self.im_fixed_path
+                self.png_path_list[0] = self.im_fixed_path
                 self.label_dicom_data_1.configure(text="None")
 
             # Resize and place it in the Frame
@@ -661,8 +671,10 @@ class Regim:
                 convert.dicom_to_png(self.im_moving_path, self.png_dest_2)
                 dicom_info = convert.dicom_file_info
                 self.label_dicom_data_2.configure(text=dicom_info)
+                self.png_path_list[1] = self.png_dest_2
             else:
                 self.png_dest_2 = self.im_moving_path
+                self.png_path_list[1] = self.im_moving_path
                 self.label_dicom_data_2.configure(text="None")
 
             # resize and place it in the Frame
@@ -702,6 +714,7 @@ class Regim:
                 registered_image = my_imreg.image_registration_method3(max_iterations)
 
             self.output_image = registered_image
+            self.output_image.save(MY_OUT_DEST)
 
             self.progress_bar['value'] = random.randint(70, 90)
             self.progress_bar.update()
@@ -709,7 +722,6 @@ class Regim:
 
             # registered_image = Image.fromarray(self.registered_image)
             self.output_image.thumbnail(IN_SIZE, Image.ANTIALIAS)
-            self.output_image.save(MY_OUT_DEST)
 
             copy = registered_image
             self.bw_image = copy.convert("L")
@@ -810,7 +822,12 @@ class Regim:
     def open_visualizer(self):
         if self.reg_object is not None:
             visual = Tk()
-            DVisual.DVisual(visual, self.png_fixed_img, self.png_moving_img, self.output_image, self.bw_image)
+            DVisual.DVisual(visual,
+                            self.png_fixed_img,
+                            self.png_moving_img,
+                            self.output_image,
+                            self.bw_image,
+                            self.png_path_list)
             visual.mainloop()
         else:
             title = "Incomplete task"
