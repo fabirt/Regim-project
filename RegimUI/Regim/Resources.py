@@ -28,7 +28,7 @@ def resource_path(relative_path):
         pass
 
 
-def opencv_resize(image_path, width=None, height=None, inter=cv2.INTER_AREA, mode=0):
+def opencv_resize(image_path, width=None, height=None, inter=cv2.INTER_CUBIC, mode=0):
     # initialize the dimensions of the cv2_image to be resized and
     # grab the cv2_image size
     dim = None

@@ -1,6 +1,6 @@
 VSVersionInfo(
     ffi=FixedFileInfo(
-		filevers=(2, 7, 0, 1),
+		filevers=(2, 7, 0, 2),
 		prodvers=(4, 1, 2, 1),
  		mask=0x3f,
 		flags=0x0,

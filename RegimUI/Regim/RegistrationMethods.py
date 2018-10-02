@@ -230,7 +230,7 @@ class Imreg:
                 nda = Sitk.GetArrayViewFromImage(cimg)
                 my_image = Image.fromarray(nda)
 
-                return my_image
+                return my_image, nda
         except:
             pass
 
@@ -398,7 +398,7 @@ class Imreg:
 
                 nda = Sitk.GetArrayViewFromImage(cimg)
                 my_image = Image.fromarray(nda)
-                return my_image
+                return my_image, nda
         except:
             pass
 

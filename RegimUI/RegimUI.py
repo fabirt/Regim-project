@@ -709,9 +709,9 @@ class Regim:
             my_imreg = Reg.Imreg(self.png_dest_1, self.png_dest_2)
 
             if method == 1:
-                registered_image = my_imreg.image_registration_method_displacement(max_iterations)
+                registered_image, reg_nda = my_imreg.image_registration_method_displacement(max_iterations)
             else:
-                registered_image = my_imreg.image_registration_method3(max_iterations)
+                registered_image, reg_nda = my_imreg.image_registration_method3(max_iterations)
 
             self.output_image = registered_image
             self.output_image.save(MY_OUT_DEST)
