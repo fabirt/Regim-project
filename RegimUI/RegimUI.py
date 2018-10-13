@@ -66,7 +66,7 @@ def exit_btn():
 # GLOBAL VARIABLES
 # -----------------------------------------------------------------------------
 """When building .exe file, remember to change images/*. to *. """  # pyinstaller.exe test.spec
-"""For distribution set dist to True"""
+"""For distribution set dist = True"""
 dist = False
 if dist is True:
     folder = '.'

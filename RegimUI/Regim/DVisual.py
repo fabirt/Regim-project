@@ -77,6 +77,8 @@ class DVisual:
 
         self.image_frame_list = [None, None, None, None]
         self.image_canvas_list = [None, None, None, None]
+        self.image_label_list = [None, None, None, None]
+        label_text_list = ["Fixed image", "Moving image", "Registered image (Diff)", "Registered image"]
         for i in range(4):
             rel_x = 0.19
             rel_y = 0.04 + (0.24 * i)
@@ -97,6 +99,10 @@ class DVisual:
             self.image_canvas_list[i].image = self.photo_list[i]
             self.image_canvas_list[i].update()  # wait till canvas is created
 
+            self.image_label_list[i] = Label(self.frame_images)
+            self.image_label_list[i].place(relx=rel_x, rely=rel_y - 0.02, width=self.tn_width)
+            self.image_label_list[i].configure(text=label_text_list[i])
+
         # Main visualizer frame configuration
         Tk.update(top)
         visual_width = int(self.frame_visual.winfo_width())
@@ -114,43 +120,80 @@ class DVisual:
         self.frame_visual_inner.configure(cursor="fleur")
 
         # Sliders configuration
+        # Brightness label
+        self.br_label = Label(self.frame_sliders)
+        self.br_label.place(relx=0.0, rely=0.05, relwidth=1)
+        self.br_label.configure(text="Brightness")
+        self.br_label.configure(background=_side_bg_color)
+        self.br_label.configure(foreground="#fff") 
         # Brightness slider
         self.scale_br = Scale(self.frame_sliders, from_=0, to=4, orient=HORIZONTAL, resolution=0.2)
-        self.scale_br.place(relx=0.0, rely=0.05, relwidth=1)
+        self.scale_br.place(relx=0.0, rely=0.08, relwidth=1)
         self.scale_br.configure(background=_side_bg_color)
         self.scale_br.configure(activebackground="#202020")
         self.scale_br.configure(foreground="#fff")
         self.scale_br.configure(borderwidth="0")
         self.scale_br.set(1)
+
+        # Contrast label
+        self.ct_label = Label(self.frame_sliders)
+        self.ct_label.place(relx=0.0, rely=0.18, relwidth=1)
+        self.ct_label.configure(text="Contrast")
+        self.ct_label.configure(background=_side_bg_color)
+        self.ct_label.configure(foreground="#fff")
         # Contrast slider
         self.scale_ct = Scale(self.frame_sliders, from_=0, to=4, orient=HORIZONTAL, resolution=0.2)
-        self.scale_ct.place(relx=0.0, rely=0.15, relwidth=1)
+        self.scale_ct.place(relx=0.0, rely=0.21, relwidth=1)
         self.scale_ct.configure(background=_side_bg_color)
         self.scale_ct.configure(activebackground="#202020")
         self.scale_ct.configure(foreground="#fff")
         self.scale_ct.configure(borderwidth="0")
         self.scale_ct.configure(command="")
         self.scale_ct.set(1)
+
+        # Color label
+        self.color_label = Label(self.frame_sliders)
+        self.color_label.place(relx=0.0, rely=0.31, relwidth=1)
+        self.color_label.configure(text="Color")
+        self.color_label.configure(background=_side_bg_color)
+        self.color_label.configure(foreground="#fff")
+        # Color slider
+        self.scale_color = Scale(self.frame_sliders, from_=0, to=4, orient=HORIZONTAL, resolution=0.2)
+        self.scale_color.place(relx=0.0, rely=0.34, relwidth=1)
+        self.scale_color.configure(background=_side_bg_color)
+        self.scale_color.configure(activebackground="#202020")
+        self.scale_color.configure(foreground="#fff")
+        self.scale_color.configure(borderwidth="0")
+        self.scale_color.configure(command="")
+        self.scale_color.set(1)
+
         # Sliders Commands
         self.scale_br.configure(command=lambda _: self.enhance_image(self.main_image_object,
                                                                      self.big_image,
                                                                      self.scale_br,
-                                                                     self.scale_ct))
+                                                                     self.scale_ct,
+                                                                     self.scale_color))
         self.scale_ct.configure(command=lambda _: self.enhance_image(self.main_image_object,
                                                                      self.big_image,
                                                                      self.scale_br,
-                                                                     self.scale_ct))
+                                                                     self.scale_ct,
+                                                                     self.scale_color))
+        self.scale_color.configure(command=lambda _: self.enhance_image(self.main_image_object,
+                                                                         self.big_image,
+                                                                         self.scale_br,
+                                                                         self.scale_ct,
+                                                                         self.scale_color))
 
     def select_image(self, event):
         """Select main canvas image"""
-        self.scale_ct.set(1)
-        self.scale_br.set(1)
+        # self.scale_br.set(1)
         count = 0
         for item in self.image_canvas_list:
             if item == event.widget:
                 item.configure(borderwidth="1")
                 self.big_image = self.resize_image(self.image_list[count], self.png_path_list[count], self.visual_size, count)
                 self.main_image_object = ZoomAdvanced.ZoomAdvanced(self.frame_visual_inner, self.big_image)
+                self.enhance_image(self.main_image_object, self.big_image, self.scale_br, self.scale_ct, self.scale_color)
             else:
                 item.configure(borderwidth="0")
             count += 1
@@ -174,12 +217,13 @@ class DVisual:
         return resized_image
 
     @staticmethod
-    def enhance_image(zoom_object, image, br_scale, cts_scale):
-        """Edit image brightness and contrast"""
+    def enhance_image(zoom_object, image, br_scale, cts_scale, color_scale):
+        """Edit image brightness, contrast and color"""
         from PIL import ImageEnhance
         if zoom_object is not None:
             brightness = br_scale.get()
             contrast = cts_scale.get()
+            color = color_scale.get()
             # if cts_scale is not None:
             #     sharpness = cts_scale.get()
             # else:
@@ -189,6 +233,9 @@ class DVisual:
 
             enhancer = ImageEnhance.Contrast(edited_img)
             edited_img = enhancer.enhance(contrast)
+
+            enhancer = ImageEnhance.Color(edited_img)
+            edited_img = enhancer.enhance(color)
 
             zoom_object.set_image(edited_img)
             zoom_object.show_image()
