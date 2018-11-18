@@ -1,5 +1,4 @@
-﻿## Universidad Del Norte
-## Image Registration Software - Regim
+﻿## Image Registration Software - Regim
 
 Regim is a desktop app developed with python in order to 
 ease medical image registration processes.
@@ -82,8 +81,8 @@ $ path/to/project/Regim> python App.py
 ___
 
 ### Contributors
-- Fabián Diartt
-- Ricardo Martín
+- fabirt
+- Rmartin20
 
 ___
 
